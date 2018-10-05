@@ -1,17 +1,80 @@
 # CalculatorLexicalAnalysis
 Part of the whole Lexical Analysis
 
-CMM文法描述：
+## CMM综述：
 
-Program->stmt-sequence
+## 词法规则
 
-stmt-sequence->statement|stmt-sequence|**ε** 
+- 整数
 
-statement->assign-stmt|declare-stmt
+```
+integer ::= 0|1|2|3|4|5|6|7|8|9
+```
 
-<声明>-><变量声明>                      
+- 布尔值
 
-<变量声明>-><类型分类符> Identifier';'      问题：如何同时声明多个变量
+```
+boolean ::= true|false
+```
+
+- 标识符
+
+```
+alphabet ::= [a-z]|[A-Z]
+identifier ::= alphabet*
+```
+
+
+
+## 语法规则
+
+- 语句
+
+```
+Program ::= stmt-sequence
+stmt-sequence ::= statement|stmt-sequence|ε 
+statement ::= assign-stmt|declare-stmt
+```
+
+- 声明语句
+
+```
+declare-stmt ::= Variable-stmt
+type ::= int|bool|float|string
+Variable-stmt ::= type identifier（下一步支持声明多个变量）
+```
+
+- 赋值语句
+
+```
+value ::= integer|boolean (浮点数计算 再说)
+variable ::= value|identifier
+assign-stmt ::= identifier=(variable|expression)
+```
+
+- 输出语句
+
+``` 
+output-stmt ::= print(value)
+```
+
+- 表达式
+
+```
+expression ::= factor op factor|factor
+factor ::= (exprssion)|variable
+op ::= add-op|mul-op
+add-op ::= '+'|'-'
+mul-op ::= '*'|'/'|'%'
+```
+
+- If | while| for 语句等 待添加
+- 附 另一种语言描述方法
+
+```
+<声明>-><变量声明>                    
+
+<变量声明>-><类型分类符> Identifier';'      问题：如何同时声明多个变量  有了
 
 <赋值语句>-><变量>'='<表达式>';'|';'
 
@@ -20,8 +83,6 @@ statement->assign-stmt|declare-stmt
 <表达式>-><因子><操作符><因子>|<因子>
 
 <因子>->'('<表达式>')'|<变量>|<数字>
-
-
 
 <操作符>-><加法操作符>|<乘法操作符>
 
@@ -32,6 +93,9 @@ statement->assign-stmt|declare-stmt
 <乘法操作>->‘*’|‘/’|‘%’
 
 <数字>->0|1|2|3|4|5|6|7|8|9
+```
+
+
 
 
 
