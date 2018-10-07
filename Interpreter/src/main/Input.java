@@ -27,6 +27,8 @@ public class Input {
 			}
 			reader.close();
 			ch = list.get(0);
+			line = 0;
+			position = 0;
 			
 	}catch(IOException e) {
 		System.err.println(e.getMessage());

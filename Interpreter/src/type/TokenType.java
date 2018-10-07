@@ -3,5 +3,6 @@ package type;
 public enum TokenType {
 	OPERATORS,
 	VALUES,
-	SEPARATORS
+	SEPARATORS,
+	IDENTIFIERS
 }
