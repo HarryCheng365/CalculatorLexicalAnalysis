@@ -1,7 +1,7 @@
 package main;
 
 import java.util.LinkedList;
-
+import exception.SyntaxException;
 import token.Identifiers;
 import token.Operators;
 import token.Separators;
@@ -22,7 +22,7 @@ public class Analysis {
 		tokens = new LinkedList<Token>();
 		
 	}
-	public void Lexical() {
+	public void Lexical() throws SyntaxException{
 		while(!input.isEnd()) {			
 			System.out.println(input.readCh());
 			while(isBlank(input.readCh())&&!input.isEnd())
@@ -46,7 +46,7 @@ public class Analysis {
 				continue;
 			}
 			
-			
+			throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 			
 		}
 	}
@@ -127,13 +127,17 @@ public class Analysis {
 			intVal = 0;
 			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition());
-			while(Character.isDigit(input.readCh())) {
+			while(Character.isDigit(input.readCh())||input.readCh()=='.') {
+				if(input.readCh()=='.')
+					break;
 				intVal += input.readCh()-48;
 				intVal *= 10;
 				input.next();
 			
 			}
 			intVal = intVal/10;
+			if(input.readCh()=='.')
+				return processDouble(intVal,temp);
 			temp.setIntValue(intVal);
 			return temp;
 			
@@ -142,9 +146,37 @@ public class Analysis {
 		return null;
 		
 	}
+	
+	public Values processDouble(int intVal, Values temp2) {
+		double tail;
+		int count;
+		double doub;
+		tail = 0;
+		count = 0;
+		input.next();
+		while(Character.isDigit(input.readCh())){
+			tail +=input.readCh()-48;
+			tail *=10;
+			count++;
+			input.next();		
+		}
+		while(count>=0) {
+		tail = tail/10;
+		count --;
+		}
+		doub = intVal+tail;
+		temp2.setType(ValuesType.DOUBLE);
+		temp2.setDouble(doub);
+		return temp2;
+		
+		
+		
+	}
+	
 	public Identifiers findIdentifier() {
 		return null;
 	}
+	
 	public void print() {
 		while(!tokens.isEmpty())
 		System.out.println(tokens.pollFirst().display());
