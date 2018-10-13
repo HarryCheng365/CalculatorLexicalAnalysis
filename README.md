@@ -8,7 +8,8 @@ Part of the whole Lexical Analysis
 - 整数
 
 ```
-integer ::= 0|1|2|3|4|5|6|7|8|9
+digit ::= 0|1|2|3|4|5|6|7|8|9
+integer ::= digit*
 ```
 
 - 布尔值
@@ -21,7 +22,40 @@ boolean ::= true|false
 
 ```
 alphabet ::= [a-z]|[A-Z]
-identifier ::= alphabet*
+identifier_body ::= alphabet|'_'|digit
+identifier_head ::= alphabet|'_'
+identifier ::= identifier_head identifier_body*
+```
+
+- 双精度浮点数
+
+```
+double ::= digit*.dight*
+```
+
+- 字符串
+
+```
+ASCII ::= ASCII码0-255(256个值)
+char ::= 'ASCII'
+String ::= "ASCII*"
+```
+
+- 保留字
+
+```
+if
+else
+while
+for
+true
+false
+int
+bool
+double
+char
+String
+print
 ```
 
 
@@ -47,7 +81,7 @@ Variable-stmt ::= type identifier（下一步支持声明多个变量）
 - 赋值语句
 
 ```
-value ::= integer|boolean (浮点数计算 再说)
+value ::= integer|boolean|double (浮点数计算 再说)
 variable ::= value|identifier
 assign-stmt ::= identifier=(variable|expression)
 ```
@@ -63,9 +97,11 @@ output-stmt ::= print(value)
 ```
 expression ::= factor op factor|factor
 factor ::= (exprssion)|variable
-op ::= add-op|mul-op
+op ::= add-op|mul-op|bool-op|com-op
 add-op ::= '+'|'-'
 mul-op ::= '*'|'/'|'%'
+bool-op ::= '&&'|'||'|'=='|'!='|'>'|'<'|'>='|'<='
+com-op ::= '+='|'-='|'*='|'/='|'%='
 ```
 
 - If | while| for 语句等 待添加
