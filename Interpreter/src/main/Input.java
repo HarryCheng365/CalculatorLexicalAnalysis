@@ -40,9 +40,13 @@ public class Input {
 	public boolean isEnd() {
 		return i == list.size()-1;
 	}
+
+	public boolean isFinished(){
+		return i==list.size();
+	}//此函数用来解决readCh()在结尾数字为整数时假越界的问题
 	
 	public int readCh() {
-		if(isEnd()) {
+		if(isFinished()) {
 			System.out.println("已到list最后一个元素");
 			return -1;
 		}

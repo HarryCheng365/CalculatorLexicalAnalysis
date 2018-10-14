@@ -23,7 +23,7 @@ public class Analysis {
 		
 	}
 	public void Lexical() throws SyntaxException{
-		while(!input.isEnd()) {			
+		while(!input.isEnd()) {
 			System.out.println(input.readCh());
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
@@ -48,6 +48,18 @@ public class Analysis {
 			
 			throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 			
+		}
+		//此部分用来解决末尾分号直接被跳过的bug，同时对出现非分号结尾的情况throw exception
+		if(input.isEnd()){
+			Separators temp1 = findSeparators();
+			if(temp1!=null){
+				if(temp1.getSep()==SeparatorsType.SEMICOLON) {
+					System.out.println(input.readCh());
+					tokens.add(temp1);
+					return;
+				}
+			}
+			throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
 		}
 	}
 	
@@ -127,7 +139,7 @@ public class Analysis {
 			intVal = 0;
 			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition());
-			while(Character.isDigit(input.readCh())||input.readCh()=='.') {
+			while(!input.isEnd()&&(Character.isDigit(input.readCh())||input.readCh()=='.')) {
 				if(input.readCh()=='.')
 					break;
 				intVal += input.readCh()-48;
