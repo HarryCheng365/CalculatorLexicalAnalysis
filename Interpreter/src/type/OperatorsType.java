@@ -6,5 +6,13 @@ public enum OperatorsType {
 	MULTIPLY,
 	DIVISION,
 	MOD,
-	ASSIGN
+	AND,
+    OR,
+    EQUAL,
+    UNEQUAL,
+    MORETHAN,
+    LESSTHAN,
+    MORETHANOREQUAL,
+    LESSTHANOREQUAL,
+    DEFAULT
 }

@@ -21,12 +21,30 @@ public class Operators extends Token{
 		if(opeVal == OperatorsType.DIVISION)
 			return String.format("<Mul-op %c,line: %d,position: %d>",'/',this.getline(),this.getPos());
 		if(opeVal == OperatorsType.MOD)
-			return String.format("<Mul-op %c,line: %d,position: %d>",'%',this.getline(),this.getPos());
-		if(opeVal == OperatorsType.ASSIGN)
-			return String.format("<Operator %c,line: %d,position: %d>",'=',this.getline(),this.getPos());
-		return "<UnKnownValue>";
+			return String.format("<Mul-op %c,line: %d,position: %d>",'%',this.getline(),this.getPos());	
+		if(opeVal == OperatorsType.AND)
+			return String.format("<Bool-op %s,line: %d,position: %d>","&&",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.OR)
+			return String.format("<Bool-op %s,line: %d,position: %d>","||",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.EQUAL)
+			return String.format("<Bool-op %s,line: %d,position: %d>","==",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.UNEQUAL)
+			return String.format("<Bool-op %s,line: %d,position: %d>","!=",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.LESSTHAN)
+			return String.format("<Bool-op %s,line: %d,position: %d>","<",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.MORETHAN)
+			return String.format("<Bool-op %s,line: %d,position: %d>",">",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.LESSTHANOREQUAL)
+			return String.format("<Bool-op %s,line: %d,position: %d>","<=",this.getline(),this.getPos());
+		if(opeVal == OperatorsType.MORETHANOREQUAL)
+			return String.format("<Bool-op %s,line: %d,position: %d>",">=",this.getline(),this.getPos());
+		
+		return "<UnKnownOperator>";
 	}
 	public OperatorsType getOp() {
 		return opeVal;
+	}
+	public void setOperatorsType(OperatorsType temp) {
+		opeVal = temp;
 	}
 }

@@ -3,6 +3,8 @@ package type;
 public enum ValuesType {
 	INTEGER,
     DOUBLE,
-	BOOLEAN
+    BOOLEAN,
+	CHAR,
+	STRING
 }
 

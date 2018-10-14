@@ -2,11 +2,13 @@ package main;
 
 import java.util.LinkedList;
 import exception.SyntaxException;
+import token.Assign;
 import token.Identifiers;
 import token.Operators;
 import token.Separators;
 import token.Token;
 import token.Values;
+import type.AssignType;
 import type.OperatorsType;
 import type.SeparatorsType;
 import type.ValuesType;
@@ -23,7 +25,7 @@ public class Analysis {
 		
 	}
 	public void Lexical() throws SyntaxException{
-		while(!input.isEnd()) {
+		while(!input.isEnd()) {			
 			System.out.println(input.readCh());
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
@@ -39,17 +41,22 @@ public class Analysis {
 				tokens.add(temp2);
 				continue;
 			}
-			//value(Integer)
-			Values temp3 = findValues();
+			Assign temp3 = findAssign();
 			if(temp3!=null) {
 				tokens.add(temp3);
+				continue;
+			}
+			//value(Integer)
+			Values temp4 = findValues();
+			if(temp4!=null) {
+				tokens.add(temp4);
 				continue;
 			}
 			
 			throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 			
 		}
-		//此部分用来解决末尾分号直接被跳过的bug，同时对出现非分号结尾的情况throw exception
+		
 		if(input.isEnd()){
 			Separators temp1 = findSeparators();
 			if(temp1!=null){
@@ -80,6 +87,28 @@ public class Analysis {
 		case ';':
 			temp = new Separators(SeparatorsType.SEMICOLON);
 			break;
+		case '{':
+			temp = new Separators(SeparatorsType.LEFTBRACE);
+			break;
+		case '}':
+			temp = new Separators(SeparatorsType.RIGHTBRACE);
+			break;
+		case '[':
+			temp = new Separators(SeparatorsType.LEFTBRACKET);
+			break;
+		case ']':
+			temp = new Separators(SeparatorsType.RIGHTBRACKET);
+			break;
+		case ':':
+			temp = new Separators(SeparatorsType.COLON);
+			break;
+		case '\'':
+			temp = new Separators(SeparatorsType.SINGLEQM);
+			break;
+		case '\"':
+			temp = new Separators(SeparatorsType.DOUBLEQM);
+			break;
+			
 		default:
 			temp = null;
 			return null;
@@ -91,35 +120,82 @@ public class Analysis {
 		return temp;
 		
 	}
+	public Assign findAssign() {
+		Assign temp;
+		temp = new Assign(AssignType.DEFAULT);
+		switch(input.readCh()) {
+		case '=':
+			input.next();
+			if(input.readCh() != '=')
+				temp = new Assign(AssignType.ASSIGN);
+			else 
+				return null;
+			input.previous();
+			break;	
+		case '+':
+			if(!isCompound(temp,'=',AssignType.ADDASSIGN)) 		
+				return null;		
+			break;
+		case '-':
+			if(!isCompound(temp,'=',AssignType.SUBASSIGN)) 		
+				return null;		
+			break;
+		case '*':
+			if(!isCompound(temp,'=',AssignType.MULASSIGN)) 		
+				return null;		
+			break;
+		default:
+			temp = null;
+			return null;		
+		}	
+		temp.setLine(input.getLine());
+		temp.setPos(input.getPosition());
+		input.next();
+		return temp;
+		}
 	
 	public Operators findOperators() {
 		Operators temp;
+		temp = new Operators(OperatorsType.DEFAULT);
 		switch(input.readCh()){
 		case '+':
-			temp = new Operators(OperatorsType.ADD);
+			if(!isNotCompound(temp,'=',OperatorsType.ADD)) 		
+				return null;
 			break;
 		case '-':
-			temp = new Operators(OperatorsType.SUBTRACT);
+			if(!isNotCompound(temp,'=',OperatorsType.SUBTRACT)) 		
+				return null;
 			break;
 		case '*':
-			temp = new Operators(OperatorsType.MULTIPLY);
+			if(!isNotCompound(temp,'=',OperatorsType.MULTIPLY)) 		
+				return null;		
 			break;
 		case '/':
 			temp = new Operators(OperatorsType.DIVISION);
 			break;
-		case '%':
-			temp = new Operators(OperatorsType.MOD);
+		case '>':
+			isCompound(temp,OperatorsType.MORETHAN,OperatorsType.MORETHANOREQUAL);
+			break;
+		case '<':
+			isCompound(temp,OperatorsType.LESSTHAN,OperatorsType.LESSTHANOREQUAL);
 			break;
 		case '=':
-			input.next();
-			if(input.readCh()!='=')
-				temp = new Operators(OperatorsType.ASSIGN);
-			else {
-				temp = null;
-				return null;
-			}
-			input.previous();
+			if(!isCompound(temp,'=',OperatorsType.EQUAL)) 		
+				return null;		
 			break;
+		case '!':
+			if(!isCompound(temp,'=',OperatorsType.UNEQUAL)) 		
+				return null;		
+			break;
+		case '&':
+			if(!isCompound(temp,'&',OperatorsType.AND)) 		
+				return null;
+			break;
+		case '|':
+			if(!isCompound(temp,'|',OperatorsType.OR)) 		
+				return null;		
+			break;
+			
 		default:
 			temp = null;
 			return null;
@@ -129,6 +205,44 @@ public class Analysis {
 		temp.setPos(input.getPosition());
 		input.next();
 		return temp;
+	}
+	
+	public void isCompound(Operators temp,OperatorsType otype1,OperatorsType otype2) {
+		input.next();
+		if(input.readCh() == '=') {
+			temp.setOperatorsType(otype1);
+		}
+		else {
+			temp.setOperatorsType(otype2);
+			input.previous();
+		}
+	}
+	public boolean isCompound(Operators temp,char aim,OperatorsType otype) {
+		input.next();
+		if(input.readCh() == aim) {
+			temp.setOperatorsType(otype);
+			return true;
+		}
+		input.previous();
+		return false;
+	}
+	public boolean isCompound(Assign temp,char aim,AssignType atype) {
+		input.next();
+		if(input.readCh() == aim) {
+			temp.setAssignType(atype);
+			return true;
+		}
+		input.previous();
+		return false;
+	}
+	public boolean isNotCompound(Operators temp,char aim,OperatorsType otype) {
+		input.next();
+		if(input.readCh() != aim) {
+			temp.setOperatorsType(otype);
+			return true;
+		}
+		input.previous();
+		return false;
 	}
 	
 	public Values findValues() {
