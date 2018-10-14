@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b97a011c-e71e-41ad-b315-65657ee2b144" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/main/Analysis.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/main/Analysis.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/main/Input.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/main/Input.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/main/source.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bin/main/source.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/Analysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Analysis.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/Input.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Input.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/source.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/source.txt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -42,13 +36,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="java" value="401" />
-          <entry key="txt" value="42" />
+          <entry key="txt" value="43" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="401" />
-          <entry key="PLAIN_TEXT" value="42" />
+          <entry key="PLAIN_TEXT" value="43" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.spring.boot.mvc.usages" />
@@ -59,20 +53,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/source.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
-              <caret line="1" column="18" lean-forward="true" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
+              <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/Analysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="56" column="62" selection-start-line="56" selection-start-column="62" selection-end-line="56" selection-end-column="62" />
+            <state relative-caret-position="-1254">
+              <caret line="55" column="51" lean-forward="true" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
             </state>
           </provider>
         </entry>
@@ -141,8 +135,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/Input.java" />
-        <option value="$PROJECT_DIR$/src/main/source.txt" />
         <option value="$PROJECT_DIR$/src/main/Analysis.java" />
+        <option value="$PROJECT_DIR$/src/main/source.txt" />
       </list>
     </option>
   </component>
@@ -197,7 +191,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1539510153386" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1539510275587" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -249,12 +243,12 @@
       <option name="presentableId" value="Default" />
       <updated>1539497557097</updated>
       <workItem from="1539497564806" duration="7438000" />
-      <workItem from="1539508840212" duration="1189000" />
+      <workItem from="1539508840212" duration="1343000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8627000" />
+    <option name="totallyTimeSpent" value="8781000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -382,17 +376,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/source.txt">
+    <entry file="file://$PROJECT_DIR$/src/main/Analysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="18" lean-forward="true" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
+        <state relative-caret-position="-1254">
+          <caret line="55" column="51" lean-forward="true" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Analysis.java">
+    <entry file="file://$PROJECT_DIR$/src/main/source.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="56" column="62" selection-start-line="56" selection-start-column="62" selection-end-line="56" selection-end-column="62" />
+        <state relative-caret-position="15">
+          <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
         </state>
       </provider>
     </entry>
