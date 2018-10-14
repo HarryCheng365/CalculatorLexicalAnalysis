@@ -57,6 +57,9 @@ public class Input {
 		if(isEnd())
 			return;
 		i++;
+		if(i==44){
+			i=i;
+		}
 		ch = list.get(i);
 		if(ch == '\n') {
 			line += 1;

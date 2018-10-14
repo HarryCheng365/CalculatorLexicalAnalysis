@@ -53,8 +53,8 @@ public class Analysis {
 		if(input.isEnd()){
 			Separators temp1 = findSeparators();
 			if(temp1!=null){
+				System.out.println(input.readCh());
 				if(temp1.getSep()==SeparatorsType.SEMICOLON) {
-					System.out.println(input.readCh());
 					tokens.add(temp1);
 					return;
 				}
@@ -167,10 +167,12 @@ public class Analysis {
 		count = 0;
 		input.next();
 		while(Character.isDigit(input.readCh())){
+			if(input.isEnd())
+				break;
 			tail +=input.readCh()-48;
 			tail *=10;
 			count++;
-			input.next();		
+			input.next();
 		}
 		while(count>=0) {
 		tail = tail/10;
