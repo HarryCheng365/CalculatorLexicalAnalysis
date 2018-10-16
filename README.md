@@ -97,11 +97,11 @@ output-stmt ::= print(value)
 ```
 expression ::= factor op factor|factor
 factor ::= (exprssion)|variable
-op ::= add-op|mul-op|bool-op|com-op
+op ::= add-op|mul-op|bool-op|Assign-op
 add-op ::= '+'|'-'
 mul-op ::= '*'|'/'|'%'
 bool-op ::= '&&'|'||'|'=='|'!='|'>'|'<'|'>='|'<='
-com-op ::= '+='|'-='|'*='
+Assign-op ::= '='|'+='|'-='|'*='
 ```
 
 - If | while| for 语句等 待添加
