@@ -210,10 +210,10 @@ public class Analysis {
 	public void isCompound(Operators temp,OperatorsType otype1,OperatorsType otype2) {
 		input.next();
 		if(input.readCh() == '=') {
-			temp.setOperatorsType(otype1);
+			temp.setOperatorsType(otype2);
 		}
 		else {
-			temp.setOperatorsType(otype2);
+			temp.setOperatorsType(otype1);
 			input.previous();
 		}
 	}
@@ -239,6 +239,7 @@ public class Analysis {
 		input.next();
 		if(input.readCh() != aim) {
 			temp.setOperatorsType(otype);
+			input.previous();
 			return true;
 		}
 		input.previous();
@@ -295,10 +296,7 @@ public class Analysis {
 		doub = intVal+tail;
 		temp2.setType(ValuesType.DOUBLE);
 		temp2.setDouble(doub);
-		return temp2;
-		
-		
-		
+		return temp2;	
 	}
 	
 	public Identifiers findIdentifier() {

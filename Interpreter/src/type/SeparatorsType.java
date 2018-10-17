@@ -11,4 +11,5 @@ public enum SeparatorsType {
 	RIGHTBRACE,
 	SINGLEQM,
 	DOUBLEQM
+	
 }
