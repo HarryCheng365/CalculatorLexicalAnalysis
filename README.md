@@ -41,6 +41,18 @@ char ::= 'ASCII'
 String ::= "ASCII*"
 ```
 
+- 操作符
+
+```
+add-op ::= '+'|'-'
+mul-op ::= '*'|'/'|'%'
+bool-op ::= '&&'|'||'|'=='|'!='|'>'|'<'|'>='|'<='
+Assign-op ::= '='|'+='|'-='|'*='
+```
+- 分隔符
+```
+Separator ::= '{'|'}'|'['|']'|'('|')'|'''|'"'|':'|';'
+```
 - 保留字
 
 ```
@@ -57,7 +69,6 @@ char
 String
 print
 ```
-
 
 
 ## 语法规则
@@ -98,10 +109,7 @@ output-stmt ::= print(value)
 expression ::= factor op factor|factor
 factor ::= (exprssion)|variable
 op ::= add-op|mul-op|bool-op|Assign-op
-add-op ::= '+'|'-'
-mul-op ::= '*'|'/'|'%'
-bool-op ::= '&&'|'||'|'=='|'!='|'>'|'<'|'>='|'<='
-Assign-op ::= '='|'+='|'-='|'*='
+
 ```
 
 - If | while| for 语句等 待添加
