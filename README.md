@@ -1,7 +1,16 @@
 # CalculatorLexicalAnalysis
-Part of the whole Lexical Analysis
+
+### Student Info
+
+李斯琪 2016302580006
+
+程浩宇 2016302580002
+
+杜会远 2016302580130
 
 ## CMM综述：
+
+CMM是一种简单的类型编程语言，其支持整数、实数、字符、字符串、布尔值类型的变量。每行代码的结尾标识为; ，无其他格式要求，冗余的空白字符会被解释器忽略。
 
 ## 词法规则
 
@@ -84,17 +93,18 @@ statement ::= assign-stmt|declare-stmt
 - 声明语句
 
 ```
-declare-stmt ::= Variable-stmt
-type ::= int|bool|float|string
+declare-stmt ::= Variable-stmt|initialization-stmt
+type ::= int|bool|double|string|char
 Variable-stmt ::= type identifier（下一步支持声明多个变量）
+initial-stmt ::= type identifier '=' (variable|expression)
 ```
 
 - 赋值语句
 
 ```
-value ::= integer|boolean|double (浮点数计算 再说)
+value ::= integer|boolean|double|String|char 
 variable ::= value|identifier
-assign-stmt ::= identifier=(variable|expression)
+assign-stmt ::= identifier Assign-op (variable|expression)
 ```
 
 - 输出语句
@@ -106,38 +116,19 @@ output-stmt ::= print(value)
 - 表达式
 
 ```
-expression ::= factor op factor|factor
+expression ::= arithmetic-expression|bool-expression 
+arithmetic-expression ::= factor arithmetic-op factor|factor
+bool-expression ::= factor bool-op factor|factor
 factor ::= (exprssion)|variable
-op ::= add-op|mul-op|bool-op|Assign-op
-
+arithmetic-op ::= add-op|mul-op
 ```
 
-- If | while| for 语句等 待添加
-- 目前不支持 // 注释 或者 /* */ 注释
-- 附 另一种语言描述方法
+- 控制语句
 
 ```
-<声明>-><变量声明>                    
-
-<变量声明>-><类型分类符> Identifier';'      问题：如何同时声明多个变量  有了
-
-<赋值语句>-><变量>'='<表达式>';'|';'
-
-<变量>->Identifier
-
-<表达式>-><因子><操作符><因子>|<因子>
-
-<因子>->'('<表达式>')'|<变量>|<数字>
-
-<操作符>-><加法操作符>|<乘法操作符>
-
-<类型分类符>->'int'|'bool'|'float'
-
-<加法操作>->‘+’|‘-’
-
-<乘法操作>->‘*’|‘/’|‘%’
-
-<数字>->0|1|2|3|4|5|6|7|8|9
+if-statement ::= if (experssion) {statement-sequence} else {statement-sequence}
+while-statement ::= while (experssion) {statement-sequence}
+for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequence}
 ```
 
 
@@ -151,17 +142,32 @@ op ::= add-op|mul-op|bool-op|Assign-op
 - 支持 if , else, while, for 等关键字 并且只要与关键字字母组合相同(无视字母大小写)的标识符都将视为非法
 - 支持以大小写字母和 _ 符号起始，接字母, _ , digit的标识符
 
-int a, int b;
 
-a=2;
 
-b=3;
+## 编码表
 
-int c=a+b;
+| 编码表   |        |          |        |          |        |
+| -------- | ------ | -------- | ------ | -------- | ------ |
+| 单词符号 | 种别码 | 单词符号 | 种别码 | 单词符号 | 种别码 |
+| If       | 1      | /        | 16     | }        | 31     |
+| else     | 2      | %        | 17     | [        | 32     |
+| while    | 3      | &&       | 18     | ]        | 33     |
+| true     | 4      | \|\|     | 19     | (        | 34     |
+| false    | 5      | ==       | 20     | )        | 35     |
+| for      | 6      | !=       | 21     | ‘        | 36     |
+| int      | 7      | >        | 22     | “        | 37     |
+| bool     | 8      | <        | 23     | :        | 38     |
+| double   | 9      | >=       | 24     | ;        | 39     |
+| char     | 10     | <=       | 25     | _        | 40     |
+| String   | 11     | =        | 26     | 字符串   | 41     |
+| print    | 12     | +=       | 27     | 整数     | 42     |
+| +        | 13     | -=       | 28     | 浮点数   | 43     |
+| -        | 14     | *=       | 29     |          |        |
+| *        | 15     | {        | 30     |          |        |
 
-int d;
+ 
 
-d=a*b;
+## 程序框图
 
 
 
