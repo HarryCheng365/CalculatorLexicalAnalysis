@@ -30,6 +30,7 @@ public class Analysis {
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
 			// separator
+			System.out.println((char)input.readCh());
 			Separators temp1 = findSeparators();
 			if(temp1!=null) {
 				tokens.add(temp1);
@@ -52,26 +53,40 @@ public class Analysis {
 				tokens.add(temp4);
 				continue;
 			}
-			
-			throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
+			if(input.readCh()=='\n'||input.readCh()=='\r'){
+				input.previous();
+				Separators tempS = findSeparators();
+				if(tempS!=null){
+					System.out.println((char)input.readCh());
+					if(tempS.getSep()==SeparatorsType.SEMICOLON) {
+						input.next();
+					}
+				}
+				else
+				throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
+			}
+			else
+				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 			
 		}
-		
 		if(input.isEnd()){
-			Separators temp1 = findSeparators();
-			if(temp1!=null){
-				System.out.println(input.readCh());
-				if(temp1.getSep()==SeparatorsType.SEMICOLON) {
-					tokens.add(temp1);
+			Separators tempS = findSeparators();
+			if(tempS!=null){
+				System.out.println((char)input.readCh());
+				if(tempS.getSep()==SeparatorsType.SEMICOLON) {
+					tokens.add(tempS);
 					return;
 				}
 			}
+			else
 			throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
 		}
+		
+		
 	}
 	
 	public boolean isBlank(int ch) {
-		if(ch == -1 || ch == '\t' || ch == '\n' || ch == ' ')
+		if(ch == -1 || ch == '\t' || ch == ' ')
 			return true;
 		return false;
 	}
@@ -101,12 +116,6 @@ public class Analysis {
 			break;
 		case ':':
 			temp = new Separators(SeparatorsType.COLON);
-			break;
-		case '\'':
-			temp = new Separators(SeparatorsType.SINGLEQM);
-			break;
-		case '\"':
-			temp = new Separators(SeparatorsType.DOUBLEQM);
 			break;
 			
 		default:
@@ -260,6 +269,7 @@ public class Analysis {
 				intVal += input.readCh()-48;
 				intVal *= 10;
 				input.next();
+				throw new ArithmeticException("integer overflow");
 			
 			}
 			intVal = intVal/10;
@@ -269,6 +279,57 @@ public class Analysis {
 			return temp;
 			
 		}
+		
+		if(input.readCh()=='\'') {
+			char charVal = 0;	
+			input.next();
+			charVal = (char) input.readCh();
+			input.next();
+			if(!input.isEnd()&&input.readCh()=='\'') {
+			temp = new Values(ValuesType.CHAR);
+			temp.setLine(input.getLine());
+			temp.setPos(input.getPosition());
+			temp.setChar(charVal);
+			input.next();
+			return temp;
+			}
+			else {
+				input.previous();
+				input.previous();
+				temp = null;
+				return null;
+				
+			}
+			}
+			
+		int count = 0;  
+		if(input.readCh()=='\"') {
+			String strval = "";
+			while(!input.isEnd()) {
+				count ++;
+				input.next();
+				if(input.readCh()=='\"')
+					break;
+				strval+=(char)input.readCh();
+			}
+			if(input.readCh()=='\"') {
+			temp = new Values(ValuesType.STRING);
+			temp.setLine(input.getLine());
+			temp.setPos(input.getPosition());
+			temp.setStr(strval);
+			input.next();
+			return temp;
+			}
+			else {
+				while(count>=0) {
+					count--;
+					input.previous();
+				}
+				temp = null;
+				return temp;
+			}
+		}
+		
 		temp = null;
 		return null;
 		
