@@ -10,7 +10,7 @@
 
 ## CMM综述：
 
-CMM是一种简单的类型编程语言，其支持整数、实数、字符、字符串、布尔值类型的变量。每行代码的结尾标识为; ，无其他格式要求，冗余的空白字符会被解释器忽略。
+CMM是一种简单的类型编程语言，其支持整数、实数、字符、字符串、布尔值类型的变量。每行代码的结尾标识为; ，暂无其他格式要求，冗余的空白字符会被解释器忽略。
 
 ## 词法规则
 
@@ -131,8 +131,6 @@ while-statement ::= while (experssion) {statement-sequence}
 for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequence}
 ```
 
-
-
 ## 支持
 
 - 支持0和正整数，正浮点数，布尔值
@@ -142,7 +140,12 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 - 支持 if , else, while, for 等关键字 并且只要与关键字字母组合相同(无视字母大小写)的标识符都将视为非法
 - 支持以大小写字母和 _ 符号起始，接字母, _ , digit的标识符
 
+## 异常处理
 
+- 采用ArrayList作为基础数据结构，解决了检索越界问题，定义previous函数可以向前检索
+- 自定义SyntaxException类，继承自Exception，在遇到不属于任一类的字符的时候会抛出错误，并指出所在行数和在行中的位置
+- SynatxException类也可以解决两个小数点相接问题
+- 解决了整数数值太大的溢出问题，现在会抛出错误
 
 ## 编码表
 
@@ -165,9 +168,24 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 | -        | 14     | *=       | 29     |          |        |
 | *        | 15     | {        | 30     |          |        |
 
- 
+##  用例
 
-## 程序框图
+```
+(12.1*78.9)/45.62+1231.1-4546;
+```
+
+![](result01.png)
+
+```
+(12.1*78.9)/45.62+12.31.1-4546;
+```
 
 
 
+![](result02.png)
+
+```
+(12.1*78.9)/45.62+1231.1-4546
+```
+
+![](result03.png)
