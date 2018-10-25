@@ -6,12 +6,14 @@ import token.Assign;
 import token.Identifiers;
 import token.Operators;
 import token.Separators;
+import token.KeyWords;
 import token.Token;
 import token.Values;
 import type.AssignType;
 import type.OperatorsType;
 import type.SeparatorsType;
 import type.ValuesType;
+import type.KeywordType;
 
 public class Analysis {
 
@@ -53,6 +55,19 @@ public class Analysis {
 				tokens.add(temp4);
 				continue;
 			}
+			//keyword
+			KeyWords temp5=findKeyword();
+			if(temp5!=null){
+				tokens.add(temp5);
+				continue;
+			}
+			//identifier
+			Identifiers tempI=findIdentifier();
+			if(tempI!=null){
+				tokens.add(tempI);
+				continue;
+			}
+
 			if(input.readCh()=='\n'||input.readCh()=='\r'){
 				input.previous();
 				Separators tempS = findSeparators();
@@ -269,7 +284,7 @@ public class Analysis {
 				intVal += input.readCh()-48;
 				intVal *= 10;
 				input.next();
-				throw new ArithmeticException("integer overflow");
+				//throw new ArithmeticException("integer overflow");
 			
 			}
 			intVal = intVal/10;
@@ -359,9 +374,132 @@ public class Analysis {
 		temp2.setDouble(doub);
 		return temp2;	
 	}
-	
+	public boolean isDigit(int ch){
+		return Character.isDigit(ch);
+	}
+
+	public boolean isLetter(int ch) {
+		return Character.isLetter(ch);
+	}
+
+	public boolean isLetter() {
+		return isLetter(input.readCh());
+	}
+
+	public boolean isIdAlphabet(int ch) {
+		return isDigit(ch) || isLetter(ch) || ch == '_';
+	}
+
+	public boolean isIdAlphabet() {
+		return isIdAlphabet(input.readCh());
+	}
+
+	public boolean isKeyword(String keyword){
+		int len=keyword.length();
+		int []chs=new int[len+1];
+		if(input.getLength()-input.getI()<len)
+			return false;
+		for(int i=0;i<len;i++){
+			chs[i]=input.readCh();
+			if(chs[i]==(int)';'){
+				for(int j=0;j<i;j++){
+					input.previous();
+				}
+				return false;
+			}
+			input.next();
+		}
+		if(input.getLength()-input.getI()==len)
+			chs[len]=-1;
+		else
+			chs[len]=input.readCh();
+
+		for(int i=0;i<len;i++){
+			if((int)keyword.charAt(i)!=chs[i]){
+				for(int j=0;j<len;j++){
+					input.previous();
+				}
+				return false;
+			}
+		}
+		if(isIdAlphabet(chs[len])){
+			for(int i=0;i<len;i++){
+				input.previous();
+			}
+			return false;
+		}
+
+
+		return true;
+
+	}
+
+	public KeyWords findKeyword(){
+		KeyWords keyword;
+		int lines = input.getLine();
+		int pos = input.getPosition();
+		if (isKeyword("if"))
+			keyword = new KeyWords(KeywordType.IF);
+		else if (isKeyword("else"))
+			keyword = new KeyWords(KeywordType.ELSE);
+		else if (isKeyword("while"))
+			keyword = new KeyWords(KeywordType.WHILE);
+		else if (isKeyword("for"))
+			keyword = new KeyWords(KeywordType.FOR);
+		else if (isKeyword("int"))
+			keyword = new KeyWords(KeywordType.INT);
+		else if (isKeyword("double"))
+			keyword = new KeyWords(KeywordType.DOUBLE);
+		else if (isKeyword("string"))
+			keyword = new KeyWords(KeywordType.STRING);
+		else if (isKeyword("bool"))
+			keyword = new KeyWords(KeywordType.BOOL);
+		else if (isKeyword("char"))
+			keyword = new KeyWords(KeywordType.CHAR);
+		else if (isKeyword("true"))
+			keyword = new KeyWords(KeywordType.TRUE);
+		else if (isKeyword("false"))
+			keyword = new KeyWords(KeywordType.FALSE);
+		else if (isKeyword("print"))
+			keyword = new KeyWords(KeywordType.PRINT);
+		else
+			return null;
+		input.previous();
+		keyword.setLine(input.getLine());
+		keyword.setPos(input.getPosition());
+		input.next();
+
+		return keyword;
+
+	}
+
 	public Identifiers findIdentifier() {
-		return null;
+		int line=input.getLine();
+		int pos=input.getPosition();
+		Identifiers identifier=isIdentifier();
+		if(identifier==null){
+			return null;
+		}else{
+			identifier.setLine(input.getLine());
+			identifier.setPos(input.getPosition()-1);
+			return identifier;
+		}
+	}
+
+	public Identifiers isIdentifier() {
+		if (input.readCh() != '_' && !isLetter())
+			return null;
+
+		StringBuffer bString = new StringBuffer();
+		while (isIdAlphabet()) {
+			bString.append((char) input.readCh());
+			input.next();
+		}
+		//input.previous();
+		Identifiers identifier = new Identifiers();
+		identifier.setId(bString.toString());
+		return identifier;
+
 	}
 	
 	public void print() {

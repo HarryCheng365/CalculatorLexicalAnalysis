@@ -63,16 +63,19 @@ public class Input {
 		ch = list.get(i);
 		if(ch == '\n') {
 			line += 1;
-			position = 0;
+			position = -2;
 		}
 		position += 1;
 	}
 	
 	public void previous() {
-		if(i-1>=0)
+		if(i-1>=0){
 			i--;
-		else
+			//如果减去一行怎么办= =加一个存上一行position的操作？还是认为previous操作不会发生在换行时？（至今previous没有发生在换行时）
+			position--;
+		}else{
 			System.out.println("已到list第一个元素");
+		}
 		ch = list.get(i);
 	}
 	
@@ -88,6 +91,13 @@ public class Input {
 		for(Integer temp:list) {
 			System.out.println(temp);
 		}
+	}
+	public int getI(){
+		return i;
+	}
+
+	public int getLength(){
+		return list.size();
 	}
 
 }
