@@ -1,5 +1,7 @@
 package state;
 
-public class Expression {
+import type.StateType;
 
+public class Expression extends State{
+    public Expression(){stateType=StateType.EXPRESSION;}
 }
