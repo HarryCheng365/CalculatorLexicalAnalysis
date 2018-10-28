@@ -1,19 +1,21 @@
 package main;
 
 import java.util.LinkedList;
+
 import exception.SyntaxException;
 import token.Assign;
 import token.Identifiers;
+import token.KeyWords;
 import token.Operators;
 import token.Separators;
-import token.KeyWords;
 import token.Token;
 import token.Values;
 import type.AssignType;
+import type.KeywordType;
 import type.OperatorsType;
 import type.SeparatorsType;
+import type.TokenType;
 import type.ValuesType;
-import type.KeywordType;
 
 public class Analysis {
 
@@ -69,19 +71,24 @@ public class Analysis {
 			}
 
 			if(input.readCh()=='\n'||input.readCh()=='\r'){
-				input.previous();
-				Separators tempS = findSeparators();
-				if(tempS!=null){
-					System.out.println((char)input.readCh());
-					if(tempS.getSep()==SeparatorsType.SEMICOLON) {
+				
+				if(tokens.getLast().getToken()==TokenType.SEPARATORS) {
+					Separators temp = (Separators) tokens.getLast();
+					if(temp.getSep()!=SeparatorsType.SEMICOLON)
+						throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
+					else
 						input.next();
-					}
 				}
 				else
-				throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
+					throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
+					
+					
 			}
 			else
 				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
+			
+			
+			
 			
 		}
 		if(input.isEnd()){
@@ -276,21 +283,24 @@ public class Analysis {
 		if(Character.isDigit(input.readCh())) {
 			temp = new Values(ValuesType.INTEGER);
 			intVal = 0;
-			temp.setLine(input.getLine());
-			temp.setPos(input.getPosition());
+			
 			while(!input.isEnd()&&(Character.isDigit(input.readCh())||input.readCh()=='.')) {
 				if(input.readCh()=='.')
 					break;
 				intVal += input.readCh()-48;
 				intVal *= 10;
+				if(intVal<0)
+					throw new ArithmeticException("Integer Overflow!");
+				
 				input.next();
-				//throw new ArithmeticException("integer overflow");
-			
-			}
+				
+			}	
 			intVal = intVal/10;
 			if(input.readCh()=='.')
-				return processDouble(intVal,temp);
+				return processDouble(intVal,temp);		
 			temp.setIntValue(intVal);
+			temp.setLine(input.getLine()-1);
+			temp.setPos(input.getPosition()-1);
 			return temp;
 			
 		}
@@ -302,8 +312,8 @@ public class Analysis {
 			input.next();
 			if(!input.isEnd()&&input.readCh()=='\'') {
 			temp = new Values(ValuesType.CHAR);
-			temp.setLine(input.getLine());
-			temp.setPos(input.getPosition());
+			temp.setLine(input.getLine()-1);
+			temp.setPos(input.getPosition()-1);
 			temp.setChar(charVal);
 			input.next();
 			return temp;
@@ -329,8 +339,8 @@ public class Analysis {
 			}
 			if(input.readCh()=='\"') {
 			temp = new Values(ValuesType.STRING);
-			temp.setLine(input.getLine());
-			temp.setPos(input.getPosition());
+			temp.setLine(input.getLine()-1);
+			temp.setPos(input.getPosition()-1);
 			temp.setStr(strval);
 			input.next();
 			return temp;
@@ -371,6 +381,8 @@ public class Analysis {
 		}
 		doub = intVal+tail;
 		temp2.setType(ValuesType.DOUBLE);
+		temp2.setLine(input.getLine()-1);
+		temp2.setPos(input.getPosition()-1);
 		temp2.setDouble(doub);
 		return temp2;	
 	}
