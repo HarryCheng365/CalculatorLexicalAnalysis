@@ -299,7 +299,7 @@ public class Analysis {
 			if(input.readCh()=='.')
 				return processDouble(intVal,temp);		
 			temp.setIntValue(intVal);
-			temp.setLine(input.getLine()-1);
+			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition()-1);
 			return temp;
 			
@@ -312,7 +312,7 @@ public class Analysis {
 			input.next();
 			if(!input.isEnd()&&input.readCh()=='\'') {
 			temp = new Values(ValuesType.CHAR);
-			temp.setLine(input.getLine()-1);
+			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition()-1);
 			temp.setChar(charVal);
 			input.next();
@@ -339,7 +339,7 @@ public class Analysis {
 			}
 			if(input.readCh()=='\"') {
 			temp = new Values(ValuesType.STRING);
-			temp.setLine(input.getLine()-1);
+			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition()-1);
 			temp.setStr(strval);
 			input.next();
@@ -381,7 +381,7 @@ public class Analysis {
 		}
 		doub = intVal+tail;
 		temp2.setType(ValuesType.DOUBLE);
-		temp2.setLine(input.getLine()-1);
+		temp2.setLine(input.getLine());
 		temp2.setPos(input.getPosition()-1);
 		temp2.setDouble(doub);
 		return temp2;	
