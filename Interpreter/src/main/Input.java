@@ -27,7 +27,7 @@ public class Input {
 			}
 			reader.close();
 			ch = list.get(0);
-			line = 1;
+			line = 0;
 			position = 0;
 			
 	}catch(IOException e) {
@@ -68,12 +68,10 @@ public class Input {
 		position += 1;
 	}
 	
-	
 	public void previous() {
 		if(i-1>=0){
 			i--;
 			//如果减去一行怎么办= =加一个存上一行position的操作？还是认为previous操作不会发生在换行时？（至今previous没有发生在换行时）
-			//我觉得这个问题应该碰不到，因为我们强制一行必须分号+换行符结尾，不存在一个语句跨行的情况，所以应该碰不到。
 			position--;
 		}else{
 			System.out.println("已到list第一个元素");

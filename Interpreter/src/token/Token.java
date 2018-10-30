@@ -7,7 +7,7 @@ public abstract class Token {
 	private int line;
 	private int position;
 	protected TokenType token;
-
+	
 	public int getline() {
 		return line;
 	}

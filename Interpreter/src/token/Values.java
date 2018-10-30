@@ -61,15 +61,15 @@ public class Values extends Token {
 	}
 	public String display() {
 		if(valueType == ValuesType.INTEGER)
-			return String.format("<IntValue %d,line: %d,position: %d>",intVal,this.getline(),this.getPos());
+			return String.format("<IntValue,%d,line:,%d,position:,%d>",intVal,this.getline(),this.getPos());
 		if(valueType == ValuesType.BOOLEAN)
-			return String.format("<BoolValue %d,line: %d,position: %d>",boolVal,this.getline(),this.getPos());
+			return String.format("<BoolValue,%d,line:,%d,position:,%d>",boolVal,this.getline(),this.getPos());
 		if(valueType == ValuesType.DOUBLE)
-			return String.format("<DoubleValue %f,line: %d,position: %d>",doubleVal,this.getline(),this.getPos());
+			return String.format("<DoubleValue,%f,line:,%d,position:,%d>",doubleVal,this.getline(),this.getPos());
 		if(valueType == ValuesType.CHAR)
-			return String.format("<CharValue %c,line: %d,position: %d>",charVal,this.getline(),this.getPos());
+			return String.format("<CharValue,%c,line:,%d,position:,%d>",charVal,this.getline(),this.getPos());
 		if(valueType == ValuesType.STRING)
-			return String.format("<StringValue %s,line: %d,position: %d>",strVal,this.getline(),this.getPos());
+			return String.format("<StringValue,%s,line:,%d,position:,%d>",strVal,this.getline(),this.getPos());
 		return "<UnKnownValue>";
 		
 	}
