@@ -158,6 +158,11 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 
 - 改写了每行是否有分号结尾的判断方式，现在line可以正常显示
 
+  > 2018.10.30
+
+- 增加了gitignore，解决了ide之间的兼容问题，整个项目更加洁净
+- fix了之前遗留的一个小bug，并统一了输出格式
+
 ## 编码表
 
 | 编码表   |        |          |        |          |        |
