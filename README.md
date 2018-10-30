@@ -143,9 +143,20 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 ## 异常处理
 
 - 采用ArrayList作为基础数据结构，解决了检索越界问题，定义previous函数可以向前检索
+
 - 自定义SyntaxException类，继承自Exception，在遇到不属于任一类的字符的时候会抛出错误，并指出所在行数和在行中的位置
+
 - SynatxException类也可以解决两个小数点相接问题
-- 解决了整数数值太大的溢出问题，现在会抛出错误
+
+  > 2018.10.27
+
+- 改写了整数数值太大溢出问题的判定方式，现在会准确抛出错误
+
+- 每一行必须以；符号结尾，并且同一句应该写在一行内，语句不可跨行
+
+- 修正了line 和 position的输出。现在line从1开始遇换行符加一，position始终打印出token的尾位置
+
+- 改写了每行是否有分号结尾的判断方式，现在line可以正常显示
 
 ## 编码表
 
