@@ -29,8 +29,7 @@ public class Analysis {
 		
 	}
 	public void Lexical() throws SyntaxException{
-		while(!input.isEnd()) {			
-			System.out.println(input.readCh());
+		while(!input.isEnd()) {	
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
 			// separator
@@ -93,12 +92,10 @@ public class Analysis {
 		}
 		if(input.isEnd()){
 			Separators tempS = findSeparators();
-			if(tempS!=null){
+			if(tempS!=null&&(tempS.getSep()==SeparatorsType.SEMICOLON||tempS.getSep()==SeparatorsType.RIGHTBRACE)){
 				System.out.println((char)input.readCh());
-				if(tempS.getSep()==SeparatorsType.SEMICOLON) {
 					tokens.add(tempS);
-					return;
-				}
+					return;		
 			}
 			else
 			throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
@@ -138,6 +135,9 @@ public class Analysis {
 			break;
 		case ':':
 			temp = new Separators(SeparatorsType.COLON);
+			break;
+		case ',':
+			temp = new Separators(SeparatorsType.COMMA);
 			break;
 			
 		default:
@@ -277,14 +277,15 @@ public class Analysis {
 		return false;
 	}
 	
-	public Values findValues() {
+	
+	public Values findValues() throws SyntaxException {
 		Values temp;
 		int intVal;
 		if(Character.isDigit(input.readCh())) {
 			temp = new Values(ValuesType.INTEGER);
 			intVal = 0;
 			
-			while(!input.isEnd()&&(Character.isDigit(input.readCh())||input.readCh()=='.')) {
+			while(!input.isEnd()&&(Character.isDigit(input.readCh())||input.readCh()=='.')) {			
 				if(input.readCh()=='.')
 					break;
 				intVal += input.readCh()-48;
@@ -294,7 +295,9 @@ public class Analysis {
 				
 				input.next();
 				
-			}	
+			}
+			if(midBlank())
+				throw new SyntaxException(input.getLine(),input.getPosition(),"数字中间有空白");		
 			intVal = intVal/10;
 			if(input.readCh()=='.')
 				return processDouble(intVal,temp);		
@@ -385,6 +388,14 @@ public class Analysis {
 		temp2.setPos(input.getPosition()-1);
 		temp2.setDouble(doub);
 		return temp2;	
+	}
+	
+	public boolean midBlank() {
+		while(isBlank(input.readCh()))
+			input.next();
+		if(isIdAlphabet(input.readCh()))
+			return true;
+		return false;
 	}
 	public boolean isDigit(int ch){
 		return Character.isDigit(ch);
@@ -485,7 +496,7 @@ public class Analysis {
 
 	}
 
-	public Identifiers findIdentifier() {
+	public Identifiers findIdentifier() throws SyntaxException {
 		int line=input.getLine();
 		int pos=input.getPosition();
 		Identifiers identifier=isIdentifier();
@@ -498,7 +509,7 @@ public class Analysis {
 		}
 	}
 
-	public Identifiers isIdentifier() {
+	public Identifiers isIdentifier() throws SyntaxException {
 		if (input.readCh() != '_' && !isLetter())
 			return null;
 
@@ -508,6 +519,8 @@ public class Analysis {
 			input.next();
 		}
 		//input.previous();
+		if(!midBlank())
+			throw new SyntaxException(input.getLine(),input.getPosition(),"标识符中间有空白");		
 		Identifiers identifier = new Identifiers();
 		identifier.setId(bString.toString());
 		return identifier;

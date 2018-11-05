@@ -10,6 +10,6 @@ public enum SeparatorsType {
 	LEFTBRACE,
 	RIGHTBRACE,
 	SINGLEQM,
-	DOUBLEQM
-	
+	DOUBLEQM,
+	COMMA	
 }

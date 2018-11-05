@@ -27,9 +27,9 @@ public class Separators extends Token{
 			return String.format("<Semicolon %c,line: %d,position: %d>",';',this.getline(),this.getPos());
 		if(sepVal == SeparatorsType.COLON)
 			return String.format("<Colon %c line: %d,position: %d>",':',this.getline(),this.getPos());
-		/*if(sepVal == SeparatorsType.SINGLEQM)
-			return String.format("<SingleQuotationMark %c,line: %d,position: %d>",'\'',this.getline(),this.getPos());
-		if(sepVal == SeparatorsType.DOUBLEQM)
+		if(sepVal == SeparatorsType.COMMA)
+			return String.format("<COMMA %c,line: %d,position: %d>",',',this.getline(),this.getPos());
+		/*if(sepVal == SeparatorsType.DOUBLEQM)
 			return String.format("<DoubleQuotationMark %c,line: %d,position: %d>",'\"',this.getline(),this.getPos());*/
 		return "<UnKnownSeparator>";
 	}

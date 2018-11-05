@@ -21,6 +21,7 @@ public class Input {
 			int head = reader.read();
 			int tail = reader.read();
 			while(head != -1) {
+				System.out.println((char)head);
 				list.add(head);
 				head = tail;
 				tail = reader.read();

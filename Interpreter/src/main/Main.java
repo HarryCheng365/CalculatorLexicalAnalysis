@@ -9,7 +9,6 @@ public class Main {
 	    analysis.Lexical();
 	    analysis.print();
 		
-		
 	
 		
 	}

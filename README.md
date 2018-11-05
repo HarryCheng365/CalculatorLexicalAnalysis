@@ -161,7 +161,16 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
   > 2018.10.30
 
 - 增加了gitignore，解决了ide之间的兼容问题，整个项目更加洁净
-- fix了之前遗留的一个小bug，并统一了输出格式
+
+- fix了之前遗留的关于line的一个小bug，并统一了输出格式
+
+  > 2018.10.31
+
+- 增加了对字母中有空白的判断，增加了对数字中有空白的判断，现在会throw出exception
+- 增加了+ + 和 - -的判断，方便写for语句
+- 修正了数字和字母连接在一起，会被判断成两个token的问题，现在会throw出exception，因为标识符不可以以数字开头
+- keyword中间有空白，也会
+- 完善各种词法的测试用例
 
 ## 编码表
 
