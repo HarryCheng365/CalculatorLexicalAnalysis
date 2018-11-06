@@ -16,6 +16,10 @@ public class Operators extends Token{
 			return String.format("<Add-op %c,line: %d,position: %d>",'+',this.getline(),this.getPos());
 		if(opeVal == OperatorsType.SUBTRACT)
 			return String.format("<Add-op %c,line: %d,position: %d>",'-',this.getline(),this.getPos());
+		if(opeVal == OperatorsType.DUAL_ADD)
+			return String.format("<DUAL-op %c,line: %d,position: %d>",'+',this.getline(),this.getPos());
+		if(opeVal == OperatorsType.DUAL_SUBTRACT)
+			return String.format("<DUAL-op %c,line: %d,position: %d>",'-',this.getline(),this.getPos());		
 		if(opeVal == OperatorsType.MULTIPLY)
 			return String.format("<Mul-op %c,line: %d,position: %d>",'*',this.getline(),this.getPos());
 		if(opeVal == OperatorsType.DIVISION)
