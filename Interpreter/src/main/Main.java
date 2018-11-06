@@ -8,6 +8,7 @@ public class Main {
 	    Analysis analysis = new Analysis(input);
 	    analysis.Lexical();
 	    analysis.print();
+	    
 		
 	
 		

@@ -391,10 +391,12 @@ public class Analysis {
 	}
 	
 	public boolean midBlank() {
+		if(!input.isEnd()) {
 		while(isBlank(input.readCh()))
 			input.next();
 		if(isIdAlphabet(input.readCh()))
 			return true;
+		}
 		return false;
 	}
 	public boolean isDigit(int ch){
@@ -516,10 +518,12 @@ public class Analysis {
 		StringBuffer bString = new StringBuffer();
 		while (isIdAlphabet()) {
 			bString.append((char) input.readCh());
+			if(input.isEnd())
+				break;
 			input.next();
 		}
 		//input.previous();
-		if(!midBlank())
+		if(midBlank())
 			throw new SyntaxException(input.getLine(),input.getPosition(),"标识符中间有空白");		
 		Identifiers identifier = new Identifiers();
 		identifier.setId(bString.toString());
