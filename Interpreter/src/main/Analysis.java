@@ -190,11 +190,11 @@ public class Analysis {
 		temp = new Operators(OperatorsType.DEFAULT);
 		switch(input.readCh()){
 		case '+':
-			if(!isNotCompound(temp,'=',OperatorsType.ADD)) 		
+			if(!isNotCompound(temp,'=','+',OperatorsType.ADD,OperatorsType.DUAL_ADD)) 		
 				return null;
 			break;
 		case '-':
-			if(!isNotCompound(temp,'=',OperatorsType.SUBTRACT)) 		
+			if(!isNotCompound(temp,'=','-',OperatorsType.SUBTRACT,OperatorsType.DUAL_SUBTRACT)) 		
 				return null;
 			break;
 		case '*':
@@ -277,10 +277,25 @@ public class Analysis {
 		return false;
 	}
 	
+	public boolean isNotCompound(Operators temp,char aim,char aim2,OperatorsType otype,OperatorsType otype2) {
+		input.next();
+		if(input.readCh()==aim2){
+			temp.setOperatorsType(otype2);
+			return true;
+		}
+		if(input.readCh() != aim) {
+			temp.setOperatorsType(otype);
+			input.previous();
+			return true;
+		}
+		input.previous();
+		return false;
+	}
 	
 	public Values findValues() throws SyntaxException {
 		Values temp;
 		int intVal;
+		int num=0;
 		if(Character.isDigit(input.readCh())) {
 			temp = new Values(ValuesType.INTEGER);
 			intVal = 0;
@@ -294,8 +309,14 @@ public class Analysis {
 					throw new ArithmeticException("Integer Overflow!");
 				
 				input.next();
-				
+				num++;
 			}
+			if(input.readCh()=='_'||Character.isLetter(input.readCh())){
+				for(int j=0;j<num;j++){
+					input.previous();
+				}
+				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
+			}			
 			if(midBlank())
 				throw new SyntaxException(input.getLine(),input.getPosition(),"数字中间有空白");		
 			intVal = intVal/10;
