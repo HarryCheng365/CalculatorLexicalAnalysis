@@ -29,7 +29,7 @@ public class Input {
 			reader.close();
 			ch = list.get(0);
 			line = 1;
-			position = 0;
+			position = 1;
 			
 	}catch(IOException e) {
 		System.err.println(e.getMessage());
@@ -62,9 +62,9 @@ public class Input {
 			i=i;
 		}
 		ch = list.get(i);
-		if(ch == '\n') {
+		if(ch == '\n'&&list.get(i-1)==';') {
 			line += 1;
-			position = -2;
+			position = -1;
 		}
 		position += 1;
 	}
