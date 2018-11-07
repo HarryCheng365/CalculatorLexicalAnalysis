@@ -161,7 +161,7 @@ public class Analysis {
 		return temp;
 		
 	}
-	public Assign findAssign() {
+	public Assign findAssign() throws SyntaxException {
 		Assign temp;
 		temp = new Assign(AssignType.DEFAULT);
 		switch(input.readCh()) {
@@ -195,7 +195,7 @@ public class Analysis {
 		return temp;
 		}
 	
-	public Operators findOperators() {
+	public Operators findOperators() throws SyntaxException {
 		Operators temp;
 		temp = new Operators(OperatorsType.DEFAULT);
 		switch(input.readCh()){
@@ -248,35 +248,72 @@ public class Analysis {
 		return temp;
 	}
 	
-	public void isCompound(Operators temp,OperatorsType otype1,OperatorsType otype2) {
+	public void isCompound(Operators temp,OperatorsType otype1,OperatorsType otype2) throws SyntaxException {
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh() == '=') {
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");	
 			temp.setOperatorsType(otype2);
 		}
 		else {
 			temp.setOperatorsType(otype1);
 			input.previous();
+			while(count>0) {
+				input.previous();
+				count--;
+			
+			}
 		}
 	}
-	public boolean isCompound(Operators temp,char aim,OperatorsType otype) {
+	public boolean isCompound(Operators temp,char aim,OperatorsType otype) throws SyntaxException {
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh() == aim) {
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			temp.setOperatorsType(otype);
 			return true;
 		}
 		input.previous();
+		while(count>0) {
+			input.previous();
+			count--;
+		
+		}
 		return false;
 	}
-	public boolean isCompound(Assign temp,char aim,AssignType atype) {
+	public boolean isCompound(Assign temp,char aim,AssignType atype) throws SyntaxException {
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh() == aim) {
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			temp.setAssignType(atype);
 			return true;
 		}
 		input.previous();
+		while(count>0) {
+			input.previous();
+			count--;
+		
+		}
 		return false;
 	}
-	public boolean isNotCompound(Operators temp,char aim,OperatorsType otype) {
+	public boolean isNotCompound(Operators temp,char aim,OperatorsType otype){
+		
 		input.next();
 		if(input.readCh() != aim) {
 			temp.setOperatorsType(otype);
@@ -287,16 +324,33 @@ public class Analysis {
 		return false;
 	}
 	
-	public boolean isNotCompound(Operators temp,char aim,char aim2,OperatorsType otype,OperatorsType otype2) {
+	public boolean isNotCompound(Operators temp,char aim,char aim2,OperatorsType otype,OperatorsType otype2) throws SyntaxException{
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh()==aim2){
 			temp.setOperatorsType(otype2);
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			return true;
 		}
 		if(input.readCh() != aim) {
 			temp.setOperatorsType(otype);
+				while(count>0) {
+					input.previous();
+					count--;
+				
+				}
 			input.previous();
 			return true;
+		}	
+		while(count>0) {
+			input.previous();
+			count--;
+		
 		}
 		input.previous();
 		return false;
