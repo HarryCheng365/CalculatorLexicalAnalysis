@@ -40,7 +40,7 @@ public class Analysis {
 				
 				if(tokens.getLast().getToken()==TokenType.SEPARATORS) {
 					Separators temp = (Separators) tokens.getLast();
-					if(temp.getSep()!=SeparatorsType.SEMICOLON)
+					if(temp.getSep()!=SeparatorsType.SEMICOLON&&(temp.getSep()!=SeparatorsType.LEFTBRACE)&&(temp.getSep()!=SeparatorsType.RIGHTBRACE))
 						throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
 					else
 					{System.out.println(input.readCh());
@@ -513,7 +513,7 @@ public class Analysis {
 			return false;
 		for(int i=0;i<len;i++){
 			chs[i]=input.readCh();
-			if(chs[i]==(int)';'|chs[i]==(int)'\n'){
+			if(chs[i]==(int)';'|chs[i]==(int)'\n'|chs[i]==(int)'{'|chs[i]==(int)'}'){
 				for(int j=0;j<i;j++){
 					input.previous();
 				}
