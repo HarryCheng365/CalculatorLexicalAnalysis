@@ -4,7 +4,7 @@ public enum OperatorsType {
 	ADD,
 	DUAL_ADD,
 	SUBTRACT,
-    	DUAL_SUBTRACT,	
+    DUAL_SUBTRACT,
 	MULTIPLY,
 	DIVISION,
 	MOD,

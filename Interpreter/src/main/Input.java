@@ -63,7 +63,7 @@ public class Input {
 			i=i;
 		}
 		ch = list.get(i);
-		if(ch == '\n'&&list.get(i-1)==';') {
+		if((ch == '\n'&&list.get(i-1)==';')||(ch=='\n'&&list.get(i-1)=='{')||(ch=='\n'&&list.get(i-1)=='}')) {
 			line += 1;
 			position = -1;
 		}
