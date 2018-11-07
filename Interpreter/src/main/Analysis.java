@@ -29,16 +29,40 @@ public class Analysis {
 		
 	}
 	public void Lexical() throws SyntaxException{
+	
+		
 		while(!input.isEnd()) {	
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
 			// separator
 			System.out.println((char)input.readCh());
+			if(input.readCh()=='\n'||input.readCh()=='\r'||input.readCh()==10){
+				
+				if(tokens.getLast().getToken()==TokenType.SEPARATORS) {
+					Separators temp = (Separators) tokens.getLast();
+					if(temp.getSep()!=SeparatorsType.SEMICOLON)
+						throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
+					else
+					{System.out.println(input.readCh());
+						input.next();
+						System.out.println(input.readCh());
+						
+					}
+				}
+				else
+					throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
+					
+					
+			}
+				
+			
+			
 			Separators temp1 = findSeparators();
 			if(temp1!=null) {
 				tokens.add(temp1);
 				continue;
 			}
+			
 			//operator
 			Operators temp2 = findOperators();
 			if(temp2!=null) {
@@ -56,40 +80,24 @@ public class Analysis {
 				tokens.add(temp4);
 				continue;
 			}
+			System.out.println(input.readCh());
 			//keyword
 			KeyWords temp5=findKeyword();
 			if(temp5!=null){
 				tokens.add(temp5);
 				continue;
 			}
+			System.out.println(input.readCh());
 			//identifier
 			Identifiers tempI=findIdentifier();
 			if(tempI!=null){
 				tokens.add(tempI);
 				continue;
 			}
-
-			if(input.readCh()=='\n'||input.readCh()=='\r'){
-				
-				if(tokens.getLast().getToken()==TokenType.SEPARATORS) {
-					Separators temp = (Separators) tokens.getLast();
-					if(temp.getSep()!=SeparatorsType.SEMICOLON)
-						throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
-					else
-						input.next();
-				}
-				else
-					throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
-					
-					
-			}
-			else
+			System.out.println(input.readCh());
 				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
-			
-			
-			
-			
 		}
+			
 		if(input.isEnd()){
 			Separators tempS = findSeparators();
 			if(tempS!=null&&(tempS.getSep()==SeparatorsType.SEMICOLON||tempS.getSep()==SeparatorsType.RIGHTBRACE)){
@@ -100,6 +108,8 @@ public class Analysis {
 			else
 			throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
 		}
+	
+		
 		
 		
 	}
@@ -317,11 +327,11 @@ public class Analysis {
 				}
 				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 			}			
-			if(midBlank())
-				throw new SyntaxException(input.getLine(),input.getPosition(),"数字中间有空白");		
-			intVal = intVal/10;
 			if(input.readCh()=='.')
-				return processDouble(intVal,temp);		
+				return processDouble(intVal,temp);	
+			if(midBlank())
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"数字中间有空白");		
+			intVal = intVal/10;
 			temp.setIntValue(intVal);
 			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition()-1);
@@ -384,7 +394,7 @@ public class Analysis {
 		
 	}
 	
-	public Values processDouble(int intVal, Values temp2) {
+	public Values processDouble(int intVal, Values temp2) throws SyntaxException {
 		double tail;
 		int count;
 		double doub;
@@ -399,6 +409,8 @@ public class Analysis {
 			count++;
 			input.next();
 		}
+		if(midBlank())
+			throw new SyntaxException(input.getLine(),input.getPosition()-1,"数字中间有空白");	
 		while(count>=0) {
 		tail = tail/10;
 		count --;
@@ -415,7 +427,7 @@ public class Analysis {
 		if(!input.isEnd()) {
 		while(isBlank(input.readCh()))
 			input.next();
-		if(isIdAlphabet(input.readCh()))
+		if(isIdAlphabet(input.readCh())||input.readCh()=='.')
 			return true;
 		}
 		return false;
@@ -453,7 +465,8 @@ public class Analysis {
 				}
 				return false;
 			}
-			input.next();
+			if(!input.isEnd())
+				input.next();
 		}
 		if(input.getLength()-input.getI()==len)
 			chs[len]=-1;
@@ -482,8 +495,6 @@ public class Analysis {
 
 	public KeyWords findKeyword(){
 		KeyWords keyword;
-		int lines = input.getLine();
-		int pos = input.getPosition();
 		if (isKeyword("if"))
 			keyword = new KeyWords(KeywordType.IF);
 		else if (isKeyword("else"))
@@ -520,14 +531,14 @@ public class Analysis {
 	}
 
 	public Identifiers findIdentifier() throws SyntaxException {
-		int line=input.getLine();
-		int pos=input.getPosition();
 		Identifiers identifier=isIdentifier();
 		if(identifier==null){
 			return null;
 		}else{
 			identifier.setLine(input.getLine());
 			identifier.setPos(input.getPosition()-1);
+			if(midBlank())
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"标识符中间有空白");
 			return identifier;
 		}
 	}
@@ -544,8 +555,7 @@ public class Analysis {
 			input.next();
 		}
 		//input.previous();
-		if(midBlank())
-			throw new SyntaxException(input.getLine(),input.getPosition(),"标识符中间有空白");		
+				
 		Identifiers identifier = new Identifiers();
 		identifier.setId(bString.toString());
 		return identifier;

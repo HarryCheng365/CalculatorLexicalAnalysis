@@ -39,6 +39,7 @@ public class Input {
 }
 	
 	public boolean isEnd() {
+		
 		return i == list.size()-1;
 	}
 
