@@ -35,20 +35,24 @@ public class Analysis {
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
 			// separator
-			System.out.println((char)input.readCh());
+			//System.out.println((char)input.readCh());
 			if(input.readCh()=='\n'||input.readCh()=='\r'||input.readCh()==10){
 				
 				if(tokens.getLast().getToken()==TokenType.SEPARATORS) {
 					Separators temp = (Separators) tokens.getLast();
-					if((temp.getSep()!=SeparatorsType.SEMICOLON)&&(temp.getSep()!=SeparatorsType.LEFTBRACE)&&(temp.getSep()!=SeparatorsType.RIGHTBRACE)){
-						System.out.println(temp.getSep()==SeparatorsType.SEMICOLON);
+					if(temp.getSep()!=SeparatorsType.SEMICOLON&&(temp.getSep()!=SeparatorsType.LEFTBRACE)&&(temp.getSep()!=SeparatorsType.RIGHTBRACE))
 						throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
-					}
-
-					else
-					{System.out.println(input.readCh());
+					else if(temp.getSep()==SeparatorsType.RIGHTBRACE&&(tokens.get(tokens.size()-2).getToken()!=TokenType.SEPARATORS)){
+						throw new SyntaxException(tokens.get(tokens.size()-2).getline(),tokens.get(tokens.size()-2).getPos()+1,"End without valid Separator!");
+					}else {
+						//System.out.println(input.readCh());
 						input.next();
-						System.out.println(input.readCh());
+						if(input.isEnd())
+							break;
+						if(input.readCh()=='\n'||input.readCh()=='\r'||input.readCh()==10)
+							input.plusLine();
+							continue;
+						//System.out.println(input.readCh());
 						
 					}
 				}
@@ -83,29 +87,33 @@ public class Analysis {
 				tokens.add(temp4);
 				continue;
 			}
-			System.out.println(input.readCh());
+			//System.out.println(input.readCh());
 			//keyword
 			KeyWords temp5=findKeyword();
 			if(temp5!=null){
 				tokens.add(temp5);
 				continue;
 			}
-			System.out.println(input.readCh());
+			//System.out.println(input.readCh());
 			//identifier
 			Identifiers tempI=findIdentifier();
 			if(tempI!=null){
 				tokens.add(tempI);
 				continue;
 			}
-			System.out.println(input.readCh());
+			//System.out.println(input.readCh());
 				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 		}
 			
 		if(input.isEnd()){
 			Separators tempS = findSeparators();
 			if(tempS!=null&&(tempS.getSep()==SeparatorsType.SEMICOLON||tempS.getSep()==SeparatorsType.RIGHTBRACE)){
-				System.out.println((char)input.readCh());
+				//System.out.println((char)input.readCh());
 					tokens.add(tempS);
+					if(tempS.getSep()==SeparatorsType.RIGHTBRACE&&tokens.get(tokens.size()-2).getToken()!=TokenType.SEPARATORS){
+						throw new SyntaxException(tokens.get(tokens.size()-2).getline(),tokens.get(tokens.size()-2).getPos()+1,"End without valid Separator!");
+
+					}
 					return;		
 			}
 			else
@@ -164,7 +172,7 @@ public class Analysis {
 		return temp;
 		
 	}
-	public Assign findAssign() {
+	public Assign findAssign() throws SyntaxException {
 		Assign temp;
 		temp = new Assign(AssignType.DEFAULT);
 		switch(input.readCh()) {
@@ -198,7 +206,7 @@ public class Analysis {
 		return temp;
 		}
 	
-	public Operators findOperators() {
+	public Operators findOperators() throws SyntaxException {
 		Operators temp;
 		temp = new Operators(OperatorsType.DEFAULT);
 		switch(input.readCh()){
@@ -251,35 +259,72 @@ public class Analysis {
 		return temp;
 	}
 	
-	public void isCompound(Operators temp,OperatorsType otype1,OperatorsType otype2) {
+	public void isCompound(Operators temp,OperatorsType otype1,OperatorsType otype2) throws SyntaxException {
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh() == '=') {
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");	
 			temp.setOperatorsType(otype2);
 		}
 		else {
 			temp.setOperatorsType(otype1);
 			input.previous();
+			while(count>0) {
+				input.previous();
+				count--;
+			
+			}
 		}
 	}
-	public boolean isCompound(Operators temp,char aim,OperatorsType otype) {
+	public boolean isCompound(Operators temp,char aim,OperatorsType otype) throws SyntaxException {
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh() == aim) {
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			temp.setOperatorsType(otype);
 			return true;
 		}
 		input.previous();
+		while(count>0) {
+			input.previous();
+			count--;
+		
+		}
 		return false;
 	}
-	public boolean isCompound(Assign temp,char aim,AssignType atype) {
+	public boolean isCompound(Assign temp,char aim,AssignType atype) throws SyntaxException {
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh() == aim) {
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			temp.setAssignType(atype);
 			return true;
 		}
 		input.previous();
+		while(count>0) {
+			input.previous();
+			count--;
+		
+		}
 		return false;
 	}
-	public boolean isNotCompound(Operators temp,char aim,OperatorsType otype) {
+	public boolean isNotCompound(Operators temp,char aim,OperatorsType otype){
+		
 		input.next();
 		if(input.readCh() != aim) {
 			temp.setOperatorsType(otype);
@@ -290,16 +335,33 @@ public class Analysis {
 		return false;
 	}
 	
-	public boolean isNotCompound(Operators temp,char aim,char aim2,OperatorsType otype,OperatorsType otype2) {
+	public boolean isNotCompound(Operators temp,char aim,char aim2,OperatorsType otype,OperatorsType otype2) throws SyntaxException{
 		input.next();
+		int count=0;
+		while(isBlank(input.readCh())&&!input.isEnd()) {
+			input.next();
+			count++;
+		}
 		if(input.readCh()==aim2){
 			temp.setOperatorsType(otype2);
+			if(count>=1)
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			return true;
 		}
 		if(input.readCh() != aim) {
 			temp.setOperatorsType(otype);
+				while(count>0) {
+					input.previous();
+					count--;
+				
+				}
 			input.previous();
 			return true;
+		}	
+		while(count>0) {
+			input.previous();
+			count--;
+		
 		}
 		input.previous();
 		return false;
