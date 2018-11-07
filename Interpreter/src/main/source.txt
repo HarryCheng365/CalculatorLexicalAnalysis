@@ -1,6 +1,10 @@
-123&&1;
-1231+=12;
+int a=123;
+double b=1.23;
+bool c=true;
 char __amd_asd='a';
 string amd="asd";
 11221323+123;
-int a = 1
+123+=123;
+int a=1;
+a+=1;
+1++;

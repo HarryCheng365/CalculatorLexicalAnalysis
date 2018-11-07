@@ -459,7 +459,7 @@ public class Analysis {
 			return false;
 		for(int i=0;i<len;i++){
 			chs[i]=input.readCh();
-			if(chs[i]==(int)';'){
+			if(chs[i]==(int)';'|chs[i]==(int)'\n'){
 				for(int j=0;j<i;j++){
 					input.previous();
 				}
