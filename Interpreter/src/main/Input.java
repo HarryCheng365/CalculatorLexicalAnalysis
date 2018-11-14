@@ -86,6 +86,10 @@ public class Input {
 	public int getLine() {
 		return line;
 	}
+
+	public void plusLine(){
+		line++;
+	}
 	
 	public int getPosition() {
 		return position;

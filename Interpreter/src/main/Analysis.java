@@ -35,17 +35,24 @@ public class Analysis {
 			while(isBlank(input.readCh())&&!input.isEnd())
 				input.next();
 			// separator
-			System.out.println((char)input.readCh());
+			//System.out.println((char)input.readCh());
 			if(input.readCh()=='\n'||input.readCh()=='\r'||input.readCh()==10){
 				
 				if(tokens.getLast().getToken()==TokenType.SEPARATORS) {
 					Separators temp = (Separators) tokens.getLast();
 					if(temp.getSep()!=SeparatorsType.SEMICOLON&&(temp.getSep()!=SeparatorsType.LEFTBRACE)&&(temp.getSep()!=SeparatorsType.RIGHTBRACE))
 						throw new SyntaxException(input.getLine(),input.getPosition(),"End without Semicolon!");
-					else
-					{System.out.println(input.readCh());
+					else if(temp.getSep()==SeparatorsType.RIGHTBRACE&&(tokens.get(tokens.size()-2).getToken()!=TokenType.SEPARATORS)){
+						throw new SyntaxException(tokens.get(tokens.size()-2).getline(),tokens.get(tokens.size()-2).getPos()+1,"End without valid Separator!");
+					}else {
+						//System.out.println(input.readCh());
 						input.next();
-						System.out.println(input.readCh());
+						if(input.isEnd())
+							break;
+						if(input.readCh()=='\n'||input.readCh()=='\r'||input.readCh()==10)
+							input.plusLine();
+							continue;
+						//System.out.println(input.readCh());
 						
 					}
 				}
@@ -80,29 +87,33 @@ public class Analysis {
 				tokens.add(temp4);
 				continue;
 			}
-			System.out.println(input.readCh());
+			//System.out.println(input.readCh());
 			//keyword
 			KeyWords temp5=findKeyword();
 			if(temp5!=null){
 				tokens.add(temp5);
 				continue;
 			}
-			System.out.println(input.readCh());
+			//System.out.println(input.readCh());
 			//identifier
 			Identifiers tempI=findIdentifier();
 			if(tempI!=null){
 				tokens.add(tempI);
 				continue;
 			}
-			System.out.println(input.readCh());
+			//System.out.println(input.readCh());
 				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
 		}
 			
 		if(input.isEnd()){
 			Separators tempS = findSeparators();
 			if(tempS!=null&&(tempS.getSep()==SeparatorsType.SEMICOLON||tempS.getSep()==SeparatorsType.RIGHTBRACE)){
-				System.out.println((char)input.readCh());
+				//System.out.println((char)input.readCh());
 					tokens.add(tempS);
+					if(tempS.getSep()==SeparatorsType.RIGHTBRACE&&tokens.get(tokens.size()-2).getToken()!=TokenType.SEPARATORS){
+						throw new SyntaxException(tokens.get(tokens.size()-2).getline(),tokens.get(tokens.size()-2).getPos()+1,"End without valid Separator!");
+
+					}
 					return;		
 			}
 			else
