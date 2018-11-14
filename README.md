@@ -56,7 +56,8 @@ String ::= "ASCII*"
 add-op ::= '+'|'-'
 mul-op ::= '*'|'/'|'%'
 bool-op ::= '&&'|'||'|'=='|'!='|'>'|'<'|'>='|'<='
-Assign-op ::= '='|'+='|'-='|'*='
+Assign-op ::= '='|'+='|'-='|'*='|'++'|'--'
+
 ```
 - 分隔符
 ```
@@ -79,6 +80,21 @@ String
 print
 ```
 
+- 转义字符
+
+```
+
+```
+
+- 注释
+
+```
+//this is a comment.
+/*this is also
+a comment */
+```
+
+
 
 ## 语法规则
 
@@ -86,17 +102,17 @@ print
 
 ```
 Program ::= stmt-sequence
-stmt-sequence ::= statement|stmt-sequence|ε 
+stmt-sequence ::= statement stmt-sequence|ε 
 statement ::= assign-stmt|declare-stmt
 ```
 
 - 声明语句
 
 ```
-declare-stmt ::= Variable-stmt|initialization-stmt
+declare-stmt ::= Variable-stmt|initial-stmt
 type ::= int|bool|double|string|char
-Variable-stmt ::= type identifier（下一步支持声明多个变量）
-initial-stmt ::= type identifier '=' (variable|expression)
+Variable-stmt ::= type identifier;（下一步支持声明多个变量）
+initial-stmt ::= type identifier '=' (variable|expression);
 ```
 
 - 赋值语句
@@ -119,8 +135,9 @@ output-stmt ::= print(value)
 expression ::= arithmetic-expression|bool-expression 
 arithmetic-expression ::= factor arithmetic-op factor|factor
 bool-expression ::= factor bool-op factor|factor
-factor ::= (exprssion)|variable
-arithmetic-op ::= add-op|mul-op
+factor ::= variable|(exprssion)
+arithmetic-op ::= add-op|mul-op 
+布尔值运算暂时不与算术运算相混合，后期可以考虑做casting false转化为0 true转化为1
 ```
 
 - 控制语句
@@ -167,10 +184,19 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
   > 2018.10.31
 
 - 增加了对字母中有空白的判断，增加了对数字中有空白的判断，现在会throw出exception
+
 - 增加了+ + 和 - -的判断，方便写for语句
+
 - 修正了数字和字母连接在一起，会被判断成两个token的问题，现在会throw出exception，因为标识符不可以以数字开头
+
 - keyword中间有空白，也会
+
 - 完善各种词法的测试用例
+
+  > 2018.11.13
+
+- 
+- 
 
 ## 编码表
 
@@ -192,6 +218,43 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 | +        | 13     | -=       | 28     | 浮点数   | 43     |
 | -        | 14     | *=       | 29     |          |        |
 | *        | 15     | {        | 30     |          |        |
+
+## 算术表达式
+
+CMM supports operation of int, double, bool, string and char, including add +, subtract -, multiple *, divide /, module % etc. For more operations see the priority list below.
+
+##### Priority of Operations (smaller number stands for higher priority)
+
+| Operator | Explanation                       | type      | Priority |
+| -------- | --------------------------------- | --------- | -------- |
+| ()       | parenthsis                        | Separator | 1        |
+| []       | bracket                           | Separator | 1        |
+| +        | positive sign                     | unary     | 2        |
+| -        | negative sign                     | unary     | 2        |
+| !        | logical NOT                       | unary     | 2        |
+| ++       | self Increment(prefix)            | Assign-op | 2        |
+| --       | self Decrement(prefix)            | Assign-op | 2        |
+| *        | multiplication                    | mul-op    | 3        |
+| /        | division                          | mul-op    | 3        |
+| %        | reminder                          | mul-op    | 3        |
+| +        | addition                          | add-op    | 4        |
+| -        | subtraction                       | add-op    | 4        |
+| <        | less than                         | bool-op   | 5        |
+| <=       | less than or equal                | bool-op   | 5        |
+| >        | greater than                      | bool-op   | 5        |
+| >=       | greater than or equal             | bool-op   | 5        |
+| ==       | equal                             | bool-op   | 6        |
+| !=       | not equal                         | bool-op   | 6        |
+| &&       | logical AND                       | bool-op   | 7        |
+| \|\|     | logical OR                        | bool-op   | 7        |
+| =        | assign                            | Assign-op | 8        |
+| +=       | compound assignment by sum        | Assign-op | 8        |
+| -=       | compound assignment by difference | Assign-op | 8        |
+| *=       | compound assignment by product    | Assign-op | 8        |
+| /=       | compound assignment by quotient   | Assign-op | 8        |
+| %=       | compound assignment by remainder  | Assign-op | 8        |
+
+- 在无casting的情况下 只有类型相同才可以比较 所以 c==b>=a的情况 只有在c是bool数的时候才是合法的
 
 ##  用例
 
