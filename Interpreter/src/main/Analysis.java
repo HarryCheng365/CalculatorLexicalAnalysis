@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import exception.SyntaxException;
 import token.Assign;
+import token.BinaryOperator;
 import token.Identifiers;
 import token.KeyWords;
 import token.Operators;
@@ -22,6 +23,7 @@ public class Analysis {
 	private Input input;
 	
 	private LinkedList<Token> tokens;
+	private Token preToken;
 	
 	public Analysis(Input temp) {
 		input = temp;
@@ -208,7 +210,7 @@ public class Analysis {
 	
 	public Operators findOperators() throws SyntaxException {
 		Operators temp;
-		temp = new Operators(OperatorsType.DEFAULT);
+		temp = new Operators();
 		switch(input.readCh()){
 		case '+':
 			if(!isNotCompound(temp,'=','+',OperatorsType.ADD,OperatorsType.DUAL_ADD)) 		
@@ -223,7 +225,7 @@ public class Analysis {
 				return null;		
 			break;
 		case '/':
-			temp = new Operators(OperatorsType.DIVISION);
+			temp = new BinaryOperator(OperatorsType.DIVISION);
 			break;
 		case '>':
 			isCompound(temp,OperatorsType.MORETHAN,OperatorsType.MORETHANOREQUAL);
@@ -256,6 +258,7 @@ public class Analysis {
 		temp.setLine(input.getLine());
 		temp.setPos(input.getPosition());
 		input.next();
+		
 		return temp;
 	}
 	
@@ -268,7 +271,7 @@ public class Analysis {
 		}
 		if(input.readCh() == '=') {
 			if(count>=1)
-				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");	
+				throw new SyntaxException(input.getLine(),input.getPosition()-1,"运算符中间有空白");
 			temp.setOperatorsType(otype2);
 		}
 		else {
@@ -391,12 +394,12 @@ public class Analysis {
 					input.previous();
 				}
 				throw new SyntaxException(input.getLine(),input.getPosition(),"invalid token!");
-			}			
+			}		
+			intVal = intVal/10;
 			if(input.readCh()=='.')
 				return processDouble(intVal,temp);	
 			if(midBlank())
 				throw new SyntaxException(input.getLine(),input.getPosition()-1,"数字中间有空白");		
-			intVal = intVal/10;
 			temp.setIntValue(intVal);
 			temp.setLine(input.getLine());
 			temp.setPos(input.getPosition()-1);
@@ -628,7 +631,39 @@ public class Analysis {
 	}
 	
 	public void print() {
-		while(!tokens.isEmpty())
-		System.out.println(tokens.pollFirst().display());
+	    LinkedList<Token> temp=new LinkedList(tokens);
+		
+		while(!temp.isEmpty())
+		System.out.println(temp.pollFirst().display());
 	}
+	
+	public Token getToken() {
+	        return tokens.peekFirst();
+	    }
+	public Token getPreToken() {
+		return this.preToken;
+	}
+
+	public Token getNextToken(){
+	        if(tokens.size() < 2)
+	            return null;
+	        return tokens.get(1);
+	    }
+
+	public boolean isendof() {
+	        return tokens.isEmpty();
+	    }
+
+	public void next() {
+		if(!isendof())
+	        preToken=tokens.pollFirst();
+		else
+			System.out.println("token序列已为空");
+		
+        }	
+	public LinkedList<Token> getList(){
+		return this.tokens;
+	}
+		
+    
 }

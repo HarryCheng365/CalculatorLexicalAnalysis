@@ -6,5 +6,6 @@ public enum TokenType {
 	SEPARATORS,
 	IDENTIFIERS,
 	KEYWORDS,
-	ASSIGN
+	ASSIGN,
+	EXPRESSION
 }

@@ -3,7 +3,7 @@ package token;
 import type.AssignType;
 import type.TokenType;
 
-public class Assign extends Token {
+public class Assign extends ExpressionToken {
 	public AssignType assign;
 	
 	public Assign(AssignType temp) {
@@ -26,6 +26,18 @@ public class Assign extends Token {
 	
 	public void setAssignType(AssignType temp) {
 		assign = temp;
+		
+	}
+	public String print() {
+		if(assign == AssignType.ASSIGN)
+			return String.format("%c",'=');
+		if(assign == AssignType.ADDASSIGN)
+			return String.format("%s","+=");
+		if(assign == AssignType.SUBASSIGN)
+			return String.format("%s","-=");
+		if(assign == AssignType.MULASSIGN)
+			return String.format("%s","*=");
+		return "<UnKnownAssignment>";
 		
 	}
 

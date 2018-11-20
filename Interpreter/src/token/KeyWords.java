@@ -40,5 +40,11 @@ public class KeyWords extends Token {
 		
 		return "<UnKnownKeyword>";
 	}
+	public KeywordType getKeyVal() {
+		return this.key;
+	}
+	public String print() {
+		return "";
+	}
 
 }

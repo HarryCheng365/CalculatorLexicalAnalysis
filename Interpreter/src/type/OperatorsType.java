@@ -16,5 +16,9 @@ public enum OperatorsType {
     LESSTHAN,
     MORETHANOREQUAL,
     LESSTHANOREQUAL,
-    DEFAULT
+    DEFAULT,
+    
+   //unary operator 
+    NOT,
+    NEGATIVESIGN
 }

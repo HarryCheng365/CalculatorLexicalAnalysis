@@ -30,5 +30,6 @@ public abstract class Token {
 		
 	}
 	public abstract String display();
+	public abstract String print();
 
 }

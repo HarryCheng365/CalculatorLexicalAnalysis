@@ -37,4 +37,25 @@ public class Separators extends Token{
 	public SeparatorsType getSep() {
 		return sepVal;
 	}
+	public String print() {
+		if(sepVal == SeparatorsType.LEFTPARENTHESES)
+			return String.format("%c",'(');
+		if(sepVal == SeparatorsType.RIGHTPARENTHESES)
+			return String.format("%c",')');
+		if(sepVal == SeparatorsType.LEFTBRACE)
+			return String.format("%c",'{');
+		if(sepVal == SeparatorsType.RIGHTBRACE)
+			return String.format("%c",'}');
+		if(sepVal == SeparatorsType.LEFTBRACKET)
+			return String.format("%c",'[');
+		if(sepVal == SeparatorsType.RIGHTBRACKET)
+			return String.format("%c",']');
+		if(sepVal == SeparatorsType.SEMICOLON)
+			return String.format("%c",';');
+		if(sepVal == SeparatorsType.COLON)
+			return String.format("%c",':');
+		if(sepVal == SeparatorsType.COMMA)
+			return String.format("%c",',');
+		return "<UnKnownSeparator>";
+	}
 }

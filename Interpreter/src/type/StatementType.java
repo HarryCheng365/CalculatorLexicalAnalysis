@@ -1,5 +1,12 @@
 package type;
 
+
 public enum StatementType {
-    INITIALIZATION
+	    INITIALIZATION,
+	    IFELSE,
+	    WHILE,
+	    FOR,
+	    EXPRESSION,
+	    RETURN
 }
+

@@ -2,7 +2,7 @@ package token;
 
 import type.TokenType;
 
-public class Identifiers extends Token{
+public class Identifiers extends ExpressionToken{
 	private String id;
 	
 	public Identifiers() {
@@ -19,6 +19,10 @@ public class Identifiers extends Token{
 	
 	public String display() {
 		return String.format("<Identifier %s,line: %d,position: %d>",id,this.getline(),this.getPos());
+	}
+	public String print() {
+		return String.format("%s",id);
+		
 	}
 
 }

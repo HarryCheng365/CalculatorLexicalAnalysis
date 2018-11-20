@@ -103,24 +103,22 @@ a comment */
 ```
 Program ::= stmt-sequence
 stmt-sequence ::= statement stmt-sequence|ε 
-statement ::= assign-stmt|declare-stmt
+statement ::= assign-stmt|declare-stmt|initial-stmt|output-stmt
 ```
 
 - 声明语句
 
 ```
-declare-stmt ::= Variable-stmt|initial-stmt
+declare-stmt ::= type identifier(,identifier)+;
 type ::= int|bool|double|string|char
-Variable-stmt ::= type identifier;（下一步支持声明多个变量）
-initial-stmt ::= type identifier '=' (variable|expression);
+initial-stmt ::= type identifier '=' factor;
 ```
 
 - 赋值语句
 
 ```
 value ::= integer|boolean|double|String|char 
-variable ::= value|identifier
-assign-stmt ::= identifier Assign-op (variable|expression)
+assign-stmt ::= identifier Assign-op factor
 ```
 
 - 输出语句
@@ -132,11 +130,9 @@ output-stmt ::= print(value)
 - 表达式
 
 ```
-expression ::= arithmetic-expression|bool-expression 
-arithmetic-expression ::= factor arithmetic-op factor|factor
-bool-expression ::= factor bool-op factor|factor
-factor ::= variable|(exprssion)
-arithmetic-op ::= add-op|mul-op 
+expression ::= factor op factor | factor
+factor ::= value|identifier|(exprssion)
+op ::= add-op|mul-op|bool-op 
 布尔值运算暂时不与算术运算相混合，后期可以考虑做casting false转化为0 true转化为1
 ```
 

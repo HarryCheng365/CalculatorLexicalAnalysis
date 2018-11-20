@@ -1,25 +1,2 @@
-int a=123;
-double b=1.23;
-bool c=true;
-char __amd_a;
-temp='a';
-string amd="asd";
-
-1122.1323+123;
-123+=123;
-int a=1;
-a+=1;
-1++;
-
-if(a>1) {
-a++;
-i++;
-}
-
-for(int i=1;i<10;i++){
-a++;
-}
-
-while(true){a++;}
-
-- 123;
+1.12+123+123+(123-12.2*4);
+33*22;
