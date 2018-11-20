@@ -193,7 +193,7 @@ public class Parser {
 	            else if (isOperator()) {
 	                Operators temp = (Operators)analysis.getToken();
 	                if(operandStack.isEmpty()&&(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.SUBTRACT)) {
-	                	UnaryOperator uop=(UnaryOperator)temp;
+	                	UnaryOperator uop= new UnaryOperator(temp);
 	                	operandStack.push(unaryOperation(uop));
 	                	analysis.next();
 	                	continue;
@@ -265,9 +265,7 @@ public class Parser {
 		 while(!stack.isEmpty()) {
 			 token1 = stack.pop();
 			 if(token1.getToken()==TokenType.EXPRESSION) {
-				 abc+="(";
 				 factor.push(calculate(calStack.pop()));
-				 abc+=")";
 			 }
 			 if(token1.getToken()==TokenType.VALUES||token1.getToken()==TokenType.IDENTIFIERS) {	
 				 System.out.println(token1.display());
@@ -282,6 +280,8 @@ public class Parser {
 					 if(va.getType()==ValuesType.DOUBLE)
 						 va.setDouble(-(va.getDouble()));
 					 factor.push(va);
+					 if(va.getType()==ValuesType.INTEGER)
+						 va.setIntValue(-(va.getIntVal()));
 					 continue;
 				 }
 				 if(factor.size()<2)
@@ -315,9 +315,6 @@ public class Parser {
 						 d = temp2.getIntVal();
 				 
 				
-				 abc+=token2.print();	
-				 abc+=op.print();
-				 abc+=token3.print();
 				 switch(op.getOp()) {
 				 case ADD:
 						 if(!opCalculate1(OperatorsType.ADD,temp1,a,b,c,d,e,f,factor))
@@ -440,7 +437,7 @@ public class Parser {
 		stack =temp;
 		return stack;
 	 }
-	 public void printStack() throws SyntaxException {
+	 public String printStack() throws SyntaxException {
 		 while(!analysis.getList().isEmpty()) {
 			 if(detectSeparator(SeparatorsType.SEMICOLON))
 				 analysis.next();
@@ -451,12 +448,11 @@ public class Parser {
 			 System.out.println("表达式为空");
 		 
 		Values temp =(Values) calculate(calStack.pop());
-		System.out.println(temp.display());
-		
-		System.out.println(abc);
+		return temp.display();
 		
 			 
 		 }	 
+		 return "Null";
 		 
 		 
 	 }

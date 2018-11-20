@@ -227,6 +227,10 @@ public class Analysis {
 		case '/':
 			temp = new BinaryOperator(OperatorsType.DIVISION);
 			break;
+			
+		case '%':
+			temp = new BinaryOperator(OperatorsType.MOD);		
+			break;
 		case '>':
 			isCompound(temp,OperatorsType.MORETHAN,OperatorsType.MORETHANOREQUAL);
 			break;
@@ -249,6 +253,7 @@ public class Analysis {
 			if(!isCompound(temp,'|',OperatorsType.OR)) 		
 				return null;		
 			break;
+		
 			
 		default:
 			temp = null;

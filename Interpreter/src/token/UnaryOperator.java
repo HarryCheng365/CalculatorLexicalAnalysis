@@ -9,6 +9,11 @@ public class UnaryOperator extends Operators{
 	        super();
 	        opeVal = type;
 	    }
+	 	public UnaryOperator(Operators op) {
+	 		super();
+	 		this.opeVal=op.getOp();
+	 		
+	 	}
 
 
 	    public void setChild(Token token){
