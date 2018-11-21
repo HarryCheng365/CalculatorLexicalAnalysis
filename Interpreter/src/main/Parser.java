@@ -205,7 +205,7 @@ public class Parser {
 	                }
 	                if(analysis.getPreToken().getToken()==TokenType.OPERATORS) {
 	                		if(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.SUBTRACT) {
-	                	 UnaryOperator uop=(UnaryOperator)temp;
+	                	 UnaryOperator uop=new UnaryOperator(temp);
 	                		operandStack.push(unaryOperation(uop));
 	                		analysis.next();
 	                		continue;
