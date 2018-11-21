@@ -171,6 +171,9 @@ public class Parser {
 	        	
 	            // Whenever meets "(" go recursion
 	            if (detectSeparator(SeparatorsType.LEFTPARENTHESES)) {
+	            	if(!operandStack.isEmpty())
+	            		if(analysis.getPreToken().getToken()!=TokenType.OPERATORS)
+	            			 throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "No Operators Before Left Parentheses");
 	            	analysis.next();
 	            	//
 	            	System.out.println(analysis.getToken().display());
@@ -180,7 +183,10 @@ public class Parser {
 	                operandStack.push(val);
 	                //
 	                if (detectSeparator(SeparatorsType.RIGHTPARENTHESES)) {
-	                	analysis.next();
+	                	if(analysis.getNextToken().getToken()!=TokenType.SEPARATORS&&analysis.getNextToken().getToken()!=TokenType.OPERATORS)
+	                		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "No Operators After Right Parentheses");
+	                	else	
+	                		analysis.next();
 	                	continue;
 	                }
 	                	else

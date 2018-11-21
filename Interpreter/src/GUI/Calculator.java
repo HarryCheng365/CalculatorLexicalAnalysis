@@ -144,10 +144,10 @@ public class Calculator {
 	    public void actionPerformed(ActionEvent e) {
 	    	try {
 	    		Main.writeTextFile(textField.getText()+";");
-				resultLabel.setText(Main.Interpreter());
-			} catch (SyntaxException e1) {
+				resultLabel.setText(Main.Interpreter().substring(1, Main.Interpreter().indexOf(',')));
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
-				statusLabel.setText(e1.message);
+				statusLabel.setText(e1.getMessage());
 				
 			}
             
