@@ -25,6 +25,7 @@ public class Parser {
 	
 	private LinkedList<Token> tokens;
 	private Stack<Stack<ExpressionToken>> calStack;
+	private Stack<SeparatorsType> sepStack;
 	private int line;
 	private int pos;
 	private String abc="";
@@ -34,6 +35,7 @@ public class Parser {
 		analysis = temp;
 		tokens = new LinkedList<Token>();
 		calStack=new Stack<Stack<ExpressionToken>>();
+		sepStack = new Stack<SeparatorsType>();
 		
 		
 	}
@@ -174,10 +176,11 @@ public class Parser {
 	            	if(!operandStack.isEmpty())
 	            		if(analysis.getPreToken().getToken()!=TokenType.OPERATORS)
 	            			 throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "No Operators Before Left Parentheses");
-	            	analysis.next();
+	            	sepStack.push(SeparatorsType.LEFTPARENTHESES);
+	            	 analysis.next();
 	            	//
 	            	System.out.println(analysis.getToken().display());
-	                calStack.push(detectExpression());  
+	            	calStack.push(detectExpression());
 	                Values val = new Values(ValuesType.DOUBLE);
 	                val.setToken(TokenType.EXPRESSION);
 	                operandStack.push(val);
@@ -185,16 +188,22 @@ public class Parser {
 	                if (detectSeparator(SeparatorsType.RIGHTPARENTHESES)) {
 	                	if(analysis.getNextToken().getToken()!=TokenType.SEPARATORS&&analysis.getNextToken().getToken()!=TokenType.OPERATORS)
 	                		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "No Operators After Right Parentheses");
-	                	else	
+	                	else {
 	                		analysis.next();
-	                	continue;
+	                		continue;
+	                		
+	                	}
+	                	
 	                }
 	                	else
-	                    throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "unmatched left parentheses");
+	                    throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Unmatched left parentheses");
 	            }
 	            // Whenever meets ")" or "]" break recursion
-	            else if (isSeparator(SeparatorsType.RIGHTPARENTHESES) || isSeparator(SeparatorsType.RIGHTBRACKET))
-	                break;
+	            else if (isSeparator(SeparatorsType.RIGHTPARENTHESES) || isSeparator(SeparatorsType.RIGHTBRACKET)) {
+	            	if(sepStack.isEmpty()||(sepStack.pop()!=SeparatorsType.LEFTPARENTHESES))
+	            		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Unmatched Right parentheses");   		
+	            	break;
+	            }
 	            // Operator
 	            else if (isOperator()) {
 	                Operators temp = (Operators)analysis.getToken();

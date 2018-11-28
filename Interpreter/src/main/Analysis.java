@@ -483,7 +483,7 @@ public class Analysis {
 			input.next();
 		}
 		if(midBlank())
-			throw new SyntaxException(input.getLine(),input.getPosition()-1,"数字中间有空白");	
+			throw new SyntaxException(input.getLine(),input.getPosition()-1,"数字中间有空白或有多个小数点");	
 		while(count>=0) {
 		tail = tail/10;
 		count --;

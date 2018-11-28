@@ -31,6 +31,7 @@ public class Calculator {
 	private JButton cal; 
 	private JLabel resultLabel;
 	private JPanel imagePanel;
+	private String abc;
 
 	/**
 	 * Launch the application.
@@ -78,7 +79,7 @@ public class Calculator {
 			JRootPane jp1 = (JRootPane) frame.getRootPane();
 			jp1.setOpaque(false);
 			
-			
+			abc="                                                                              ";
 		Container con=frame.getContentPane();
 	    con.setLayout(new GridLayout(5,1));
 	    
@@ -110,7 +111,7 @@ public class Calculator {
 		JLabel exception=new JLabel("Exception:");
 		exception.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		panel3.add(exception);
-		statusLabel=new JLabel("                                                                              ");
+		statusLabel=new JLabel(abc);
 		statusLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		statusLabel.setForeground(Color.red);
 		panel3.add(statusLabel);
@@ -121,7 +122,7 @@ public class Calculator {
 		JLabel output=new JLabel("Result:");
 		output.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		panel4.add(output);
-		resultLabel=new JLabel("                                                                              ");
+		resultLabel=new JLabel(abc);
 		resultLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		resultLabel.setForeground(Color.red);
 		panel4.add(resultLabel);
@@ -145,9 +146,11 @@ public class Calculator {
 	    	try {
 	    		Main.writeTextFile(textField.getText()+";");
 				resultLabel.setText(Main.Interpreter().substring(1, Main.Interpreter().indexOf(',')));
+				statusLabel.setText(abc);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				statusLabel.setText(e1.getMessage());
+				resultLabel.setText(abc);
 				
 			}
             

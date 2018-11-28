@@ -8,9 +8,13 @@
 
 杜会远 2016302580130
 
+
+
 ## CMM综述：
 
 CMM是一种简单的类型编程语言，其支持整数、实数、字符、字符串、布尔值类型的变量。每行代码的结尾标识为; ，暂无其他格式要求，冗余的空白字符会被解释器忽略。
+
+
 
 ## 词法规则
 
@@ -141,6 +145,8 @@ while-statement ::= while (experssion) {statement-sequence}
 for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequence}
 ```
 
+
+
 ## 支持
 
 - 支持0和整数 (含负数），正浮点数，布尔值
@@ -150,6 +156,8 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 - 支持 if , else, while, for 等关键字 并且只要与关键字字母组合相同(无视字母大小写)的标识符都将视为非法
 - 支持以大小写字母和 _ 符号起始，接字母, _ , digit的标识符
 - 支持含double和int类型的算术表达式的计算
+
+
 
 ## 异常处理
 
@@ -199,6 +207,8 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 
 - 完善控制语句的语法分析
 
+
+
 ## 编码表
 
 | 编码表   |        |          |        |          |        |
@@ -220,6 +230,8 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 | -        | 14     | *=       | 29     |          |        |
 | *        | 15     | {        | 30     |          |        |
 
+
+
 ## 转义字符
 
 Escape characters are properly recognized and organized. CMM only supports the escape characters in the following table.
@@ -240,34 +252,43 @@ CMM supports operation of int, double, bool, string and char, including add +, s
 
 ##### Priority of Operations (smaller number stands for higher priority)
 
-| Operator | Explanation                       | type      | Priority |
-| -------- | --------------------------------- | --------- | -------- |
-| ()       | parenthsis                        | Separator | 1        |
-| []       | bracket                           | Separator | 1        |
-| +        | positive sign                     | unary     | 2        |
-| -        | negative sign                     | unary     | 2        |
-| !        | logical NOT                       | unary     | 2        |
-| ++       | self Increment(prefix)            | Assign-op | 2        |
-| --       | self Decrement(prefix)            | Assign-op | 2        |
-| *        | multiplication                    | mul-op    | 3        |
-| /        | division                          | mul-op    | 3        |
-| %        | reminder                          | mul-op    | 3        |
-| +        | addition                          | add-op    | 4        |
-| -        | subtraction                       | add-op    | 4        |
-| <        | less than                         | bool-op   | 5        |
-| <=       | less than or equal                | bool-op   | 5        |
-| >        | greater than                      | bool-op   | 5        |
-| >=       | greater than or equal             | bool-op   | 5        |
-| ==       | equal                             | bool-op   | 6        |
-| !=       | not equal                         | bool-op   | 6        |
-| &&       | logical AND                       | bool-op   | 7        |
-| \|\|     | logical OR                        | bool-op   | 7        |
-| =        | assign                            | Assign-op | 8        |
-| +=       | compound assignment by sum        | Assign-op | 8        |
-| -=       | compound assignment by difference | Assign-op | 8        |
-| *=       | compound assignment by product    | Assign-op | 8        |
-| /=       | compound assignment by quotient   | Assign-op | 8        |
-| %=       | compound assignment by remainder  | Assign-op | 8        |
+| Operator | Explanation            | type      | Priority |
+| -------- | ---------------------- | --------- | -------- |
+| ()       | parenthsis             | Separator | 1        |
+| []       | bracket                | Separator | 1        |
+| +        | positive sign          | unary     | 2        |
+| -        | negative sign          | unary     | 2        |
+| !        | logical NOT            | unary     | 2        |
+| ++       | self Increment(prefix) | Assign-op | 2        |
+| --       | self Decrement(prefix) | Assign-op | 2        |
+| *        | multiplication         | mul-op    | 3        |
+| /        | division               | mul-op    | 3        |
+| %        | reminder               | mul-op    | 3        |
+| +        | addition               | add-op    | 4        |
+| -        | subtraction            | add-op    | 4        |
+| <        | less than              | bool-op   | 5        |
+| <=       | less than or equal     | bool-op   | 5        |
+| >        | greater than           | bool-op   | 5        |
+| >=       | greater than or equal  | bool-op   | 5        |
+| ==       | equal                  | bool-op   | 6        |
+| !=       | not equal              | bool-op   | 6        |
+| &&       | logical AND            | bool-op   | 7        |
+| \|\|     | logical OR             | bool-op   | 7        |
+
+
+
+
+
+| Assign-Op | Explanation                       | type      | Priority |
+| --------- | --------------------------------- | --------- | -------- |
+| =         | assign                            | Assign-op | 8        |
+| +=        | compound assignment by add        | Assign-op | 8        |
+| -=        | compound assignment by difference | Assign-op | 8        |
+| *=        | compound assignment by product    | Assign-op | 8        |
+| /=        | compound assignment by quotient   | Assign-op | 8        |
+| %=        | compound assignment by remainder  | Assign-op | 8        |
+
+
 
 - 在无casting的情况下 只有类型相同才可以比较 所以 c==b>=a的情况 只有在c是bool数的时候才是合法的
 - So that we can do something like these：
@@ -275,6 +296,8 @@ CMM supports operation of int, double, bool, string and char, including add +, s
   - `1 + 2 * 3 * 4 + 5 - 6 =24`
   - `1 + 3 % 2 = 2`
   - `1.3323 + 3.14 - 5.1 = -0.6277`
+
+
 
 ## 函数
 
