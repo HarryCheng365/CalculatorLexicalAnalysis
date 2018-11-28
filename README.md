@@ -205,7 +205,9 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 
   > 2018.11.28
 
-- 完善控制语句的语法分析
+- GUI result和exception两个label的显示逻辑进行了修改 
+
+- 增加了一个长度为Parser实例生命周期的分隔符栈，用以判断() ,[] ,{}是否有单侧缺失
 
 
 
