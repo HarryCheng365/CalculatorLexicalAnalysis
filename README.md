@@ -78,12 +78,8 @@ double
 char
 String
 print
-```
-
-- 转义字符
-
-```
-
+return
+void
 ```
 
 - 注释
@@ -131,6 +127,7 @@ output-stmt ::= print(value)
 
 ```
 expression ::= factor op factor | factor
+bool-expression ::= factor bool-op factor | factor
 factor ::= value|identifier|(exprssion)
 op ::= add-op|mul-op|bool-op 
 布尔值运算暂时不与算术运算相混合，后期可以考虑做casting false转化为0 true转化为1
@@ -146,12 +143,13 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 
 ## 支持
 
-- 支持0和正整数，正浮点数，布尔值
+- 支持0和整数 (含负数），正浮点数，布尔值
 - 支持加法操作符，乘法操作符，赋值操作符，布尔运算符，复合操作符
 - 支持字符和字符串，分别用‘  ‘和 “ ”作为标识
 - 支持 ( ) , { } , [ ] 三种括号，以及 : 和 ;
 - 支持 if , else, while, for 等关键字 并且只要与关键字字母组合相同(无视字母大小写)的标识符都将视为非法
 - 支持以大小写字母和 _ 符号起始，接字母, _ , digit的标识符
+- 支持含double和int类型的算术表达式的计算
 
 ## 异常处理
 
@@ -191,8 +189,15 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 
   > 2018.11.13
 
-- 
-- 
+- 语法分析表达式部分基本完工，增添了负数部分
+
+- GUI界面也已做好，先能正常输入输出并计算
+
+- 增添了多种exception判定 如 左括号无右括号，右括号前无左括号以及括号一对多的情况
+
+  > 2018.11.28
+
+- 完善控制语句的语法分析
 
 ## 编码表
 
@@ -214,6 +219,20 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 | +        | 13     | -=       | 28     | 浮点数   | 43     |
 | -        | 14     | *=       | 29     |          |        |
 | *        | 15     | {        | 30     |          |        |
+
+## 转义字符
+
+Escape characters are properly recognized and organized. CMM only supports the escape characters in the following table.
+
+| Escape Character |    Logical Meaning     |
+| :--------------: | :--------------------: |
+|        \n        |        new line        |
+|        \t        |     horizontal tab     |
+|        \'        | single quotation marks |
+|        \"        | double quotation marks |
+|        \\        |       backslash        |
+
+
 
 ## 算术表达式
 
@@ -251,25 +270,70 @@ CMM supports operation of int, double, bool, string and char, including add +, s
 | %=       | compound assignment by remainder  | Assign-op | 8        |
 
 - 在无casting的情况下 只有类型相同才可以比较 所以 c==b>=a的情况 只有在c是bool数的时候才是合法的
+- So that we can do something like these：
+  - `(1 + 2) * (3 * (4 + 5) - 6) = 63`
+  - `1 + 2 * 3 * 4 + 5 - 6 =24`
+  - `1 + 3 % 2 = 2`
+  - `1.3323 + 3.14 - 5.1 = -0.6277`
+
+## 函数
+
+### Main function
+
+```
+int main(){
+  //do something
+  return 0;
+}
+```
+
+```
+void main(){
+  //do something
+}
+```
+
+Both are supported in CMM.
+
+**Note that if you use 'int main', whatever the result is, append 'return 0' at the end of the function.**
+
+
+
+### User-define functions
+
+```
+int foo(){
+  //do something
+}
+```
+
+```
+double foo(int a){
+  //do something
+}
+```
+
+```
+int foo(int a){
+  //do something
+}
+```
+
+Because their return values or input values are not the same, these are two different methods via override.
+
+
 
 ##  用例
+
+![484AC5F0-9016-481C-801E-64AC443F3C58](sample1.png)
 
 ```
 (12.1*78.9)/45.62+1231.1-4546;
 ```
 
-![](result01.png)
+![93631AEE-A25B-4CF2-A201-29FADC26EF98](sample2.png)
 
 ```
-(12.1*78.9)/45.62+12.31.1-4546;
+(12.1*78.9/45.62+12;
 ```
 
-
-
-![](result02.png)
-
-```
-(12.1*78.9)/45.62+1231.1-4546
-```
-
-![](result03.png)
