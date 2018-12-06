@@ -1,5 +1,6 @@
 package main;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -24,18 +25,21 @@ public class Parser {
 	private Analysis analysis;
 	
 	private LinkedList<Token> tokens;
-	private Stack<Stack<ExpressionToken>> calStack;
+	private HashMap<Integer,Stack<ExpressionToken>> calHash;
 	private Stack<SeparatorsType> sepStack;
 	private int line;
 	private int pos;
+	private int hashKey;
 	private String abc="";
 	
 	
 	public Parser(Analysis temp) {
 		analysis = temp;
 		tokens = new LinkedList<Token>();
-		calStack=new Stack<Stack<ExpressionToken>>();
+		calHash = new HashMap<Integer,Stack<ExpressionToken>>();
+		hashKey = 0;
 		sepStack = new Stack<SeparatorsType>();
+		
 		
 		
 	}
@@ -143,17 +147,20 @@ public class Parser {
 			 analysis.next();
 			 if(detectValue()==ValuesType.DOUBLE||detectValue()==ValuesType.INTEGER) {
 				 temp.setChild(analysis.getToken());
+			
 				 
 				 return temp;
 				//-(-(-(-(-1*(3-7)*(-4)+2))+3)+4*12+3*(-(-(-(+3))))) 
 			 }
 			 else if(detectSeparator(SeparatorsType.LEFTPARENTHESES)) {
 				  sepStack.push(SeparatorsType.LEFTPARENTHESES);
-            	  analysis.next();
-				  calStack.push(detectExpression());
+            	  analysis.next();	  
 				  Values val = new Values(ValuesType.DOUBLE);
+				  val.setInteger(new Integer(++hashKey));
+				  calHash.put(val.getInteger(),detectExpression());
 	              val.setToken(TokenType.EXPRESSION);
 				  temp.setChild(val);
+				  
 				  return temp;
 			 }
 			 else
@@ -192,13 +199,13 @@ public class Parser {
 	            	sepStack.push(SeparatorsType.LEFTPARENTHESES);
 	            	 analysis.next();
 	            	//
-	            	System.out.println(analysis.getToken().display());
-	            	calStack.push(detectExpression());
+	    
 	                Values val = new Values(ValuesType.DOUBLE);
+	                val.setInteger(new Integer(++hashKey));
+	                calHash.put(val.getInteger(), detectExpression());
 	                val.setToken(TokenType.EXPRESSION);
 	                operandStack.push(val);
 	                //
-	                System.out.println(analysis.getToken().display());
 	                if (detectSeparator(SeparatorsType.RIGHTPARENTHESES)) {
 	                	if(analysis.getNextToken().getToken()!=TokenType.SEPARATORS&&analysis.getNextToken().getToken()!=TokenType.OPERATORS)
 	                		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "No Operators After Right Parentheses");
@@ -293,7 +300,8 @@ public class Parser {
 		 while(!stack.isEmpty()) {
 			 token1 = stack.pop();
 			 if(token1.getToken()==TokenType.EXPRESSION) {
-				 factor.push(calculate(calStack.pop()));
+				 
+				 factor.push(calculate(calHash.get(((Values)token1).getInteger())));
 			 }
 			 if(token1.getToken()==TokenType.VALUES||token1.getToken()==TokenType.IDENTIFIERS) {	
 				 System.out.println(token1.display());
@@ -305,7 +313,7 @@ public class Parser {
 				 if(isUnaryOperator(op)) {
 					 UnaryOperator uop =(UnaryOperator)op;
 					 if(uop.getChild().getToken()==TokenType.EXPRESSION) {
-						 token1=calculate(calStack.pop());
+						 token1=calculate(calHash.get(((Values)uop.getChild()).getInteger()));
 						 if(token1.getToken()==TokenType.VALUES) {
 							 Values vb = (Values)token1;
 							 factor.push(unaryConvert(vb,uop.getOp()));
@@ -359,10 +367,11 @@ public class Parser {
 					 break;
 				 case SUBTRACT:
 					 if(!opCalculate1(OperatorsType.SUBTRACT,temp1,a,b,c,d,e,f,factor))
-						 throw new SyntaxException( "Error Operation While Calculating ");
-					 
+						 throw new SyntaxException( "Error Operation While Calculating ");		 
 					 break;
 				 case MULTIPLY:
+					 System.out.println(c);
+					 System.out.println(d);
 					 if(!opCalculate1(OperatorsType.MULTIPLY,temp1,a,b,c,d,e,f,factor))
 						 throw new SyntaxException( "Error Operation While Calculating ");
 					 break;
@@ -420,9 +429,15 @@ public class Parser {
 				 return true;
 			}
 			else if(!e&&!f) {
+				if(d>c&&type==OperatorsType.DIVISION) {
+					temp1.setType(ValuesType.DOUBLE);
+					factor.push(opCalculate2(type,temp1,(double)c,(double)d));			
+				}
+				else {
 				temp1.setType(ValuesType.INTEGER);
-				factor.push(opCalculate2(type,temp1,c,d));
-				 return true;
+				factor.push(opCalculate2(type,temp1,c,d)); 
+				}
+				return true;
 			}
 			else if(!e&&f) {
 				temp1.setType(ValuesType.DOUBLE);
@@ -500,11 +515,15 @@ public class Parser {
 				 analysis.next();
 			 if(analysis.getList().size()<=1)
 				 break;
-		 calStack.push(detectExpression());
-		 if(calStack.isEmpty())
+			 Values val = new Values(ValuesType.DOUBLE);
+             val.setInteger(new Integer(++hashKey));
+             calHash.put(val.getInteger(), detectExpression());
+             val.setToken(TokenType.EXPRESSION);
+		 if(calHash.isEmpty())
 			 System.out.println("表达式为空");
 		 
-		Values temp =(Values) calculate(calStack.pop());
+		Values temp =(Values) calculate(calHash.get(val.getInteger()));
+		System.out.println(-(-(-(-(-1*(3-7)*(-4)+2))+3)+4*12+3*(-(-(-(+3))))));
 		return temp.display();
 		
 			 

@@ -13,15 +13,24 @@ public class Values extends ExpressionToken {
 	private double doubleVal;
 	private String strVal;
 	private char charVal;
+	private Integer key;
 	
 	
 	public Values(ValuesType temp) {
 		token = TokenType.VALUES;
 		valueType = temp;
+		key = new Integer(0);
 
 		
 	}
+	public Integer getInteger() {
+		return this.key;
+	}
 	
+	public void setInteger(Integer key) {
+		this.key=key;
+		
+	}
 	public int getIntVal() {
 		return intVal;
 	}
