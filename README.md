@@ -209,6 +209,10 @@ for-statement ::= for (initial-stmt;bool-expression;assign-stmt) {statement-sequ
 
 - 增加了一个长度为Parser实例生命周期的分隔符栈，用以判断() ,[] ,{}是否有单侧缺失
 
+  > 2018.12.5
+
+- -(23123*123123)
+
 
 
 ## 编码表

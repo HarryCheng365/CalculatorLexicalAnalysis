@@ -1,4 +1,4 @@
-package state;
+package statement;
 
 import type.StateType;
 

@@ -119,7 +119,7 @@ public class Parser {
 		 return temp.getType();
 	 }
 	 private boolean isUnaryOperator(Operators temp) {
-		 if(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.NEGATIVESIGN)
+		 if(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.NEGATIVESIGN||temp.getOp()==OperatorsType.POSITIVEASIGN)
 			 return true;
 		 return false;
 		 
@@ -135,13 +135,26 @@ public class Parser {
 				throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Redundant Operator");
 				
 		 }
-		 if(temp.getOp()==OperatorsType.SUBTRACT) {
+		 if(temp.getOp()==OperatorsType.SUBTRACT||temp.getOp()==OperatorsType.ADD) {
+			 if(temp.getOp()==OperatorsType.SUBTRACT)
+				temp.setOperatorsType(OperatorsType.NEGATIVESIGN);
+			 else if(temp.getOp()==OperatorsType.ADD)
+				 temp.setOperatorsType(OperatorsType.POSITIVEASIGN);
 			 analysis.next();
 			 if(detectValue()==ValuesType.DOUBLE||detectValue()==ValuesType.INTEGER) {
 				 temp.setChild(analysis.getToken());
-				 temp.setOperatorsType(OperatorsType.NEGATIVESIGN);
-				 return temp;
 				 
+				 return temp;
+				//-(-(-(-(-1*(3-7)*(-4)+2))+3)+4*12+3*(-(-(-(+3))))) 
+			 }
+			 else if(detectSeparator(SeparatorsType.LEFTPARENTHESES)) {
+				  sepStack.push(SeparatorsType.LEFTPARENTHESES);
+            	  analysis.next();
+				  calStack.push(detectExpression());
+				  Values val = new Values(ValuesType.DOUBLE);
+	              val.setToken(TokenType.EXPRESSION);
+				  temp.setChild(val);
+				  return temp;
 			 }
 			 else
 				 throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Redundant Operator");
@@ -185,6 +198,7 @@ public class Parser {
 	                val.setToken(TokenType.EXPRESSION);
 	                operandStack.push(val);
 	                //
+	                System.out.println(analysis.getToken().display());
 	                if (detectSeparator(SeparatorsType.RIGHTPARENTHESES)) {
 	                	if(analysis.getNextToken().getToken()!=TokenType.SEPARATORS&&analysis.getNextToken().getToken()!=TokenType.OPERATORS)
 	                		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "No Operators After Right Parentheses");
@@ -207,12 +221,12 @@ public class Parser {
 	            // Operator
 	            else if (isOperator()) {
 	                Operators temp = (Operators)analysis.getToken();
-	                if(operandStack.isEmpty()&&(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.SUBTRACT)) {
+	                if(operandStack.isEmpty()&&(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.SUBTRACT||temp.getOp()==OperatorsType.ADD)) {
 	                	UnaryOperator uop= new UnaryOperator(temp);
 	                	operandStack.push(unaryOperation(uop));
 	                	analysis.next();
 	                	continue;
-	                }//负号现在只有一种方法检测的出来，就是带括号然后(-1)这种 手动输入的负号 只有-加value 然后 带括号才算合法 否则词法都过不了，词法会检测operator链接问题
+	                }
 	                if (operatorStack.isEmpty()) {
 	                    operatorStack.push(temp);
 	                    analysis.next();
@@ -260,7 +274,9 @@ public class Parser {
 	        while (!operatorStack.isEmpty()) {
 	            operandStack.push(operatorStack.pop());
 	        }
-	        
+	       for(int i =0; i<operandStack.size();i++) {
+	    	   System.out.println("这是"+operandStack.get(i).display());
+	       }
 	        return operandStack;
 	 }
 	 //在词法部分 就解决操作符多个问题 报不合法
@@ -273,10 +289,7 @@ public class Parser {
 		 
 		 Stack<ExpressionToken> factor = new Stack<ExpressionToken>();
 		 Stack<ExpressionToken> stack =reverseStack(temp);
-		 
-		 
-		
-		 
+		  
 		 while(!stack.isEmpty()) {
 			 token1 = stack.pop();
 			 if(token1.getToken()==TokenType.EXPRESSION) {
@@ -291,12 +304,20 @@ public class Parser {
 				 Operators op = (Operators)token1;
 				 if(isUnaryOperator(op)) {
 					 UnaryOperator uop =(UnaryOperator)op;
+					 if(uop.getChild().getToken()==TokenType.EXPRESSION) {
+						 token1=calculate(calStack.pop());
+						 if(token1.getToken()==TokenType.VALUES) {
+							 Values vb = (Values)token1;
+							 factor.push(unaryConvert(vb,uop.getOp()));
+						 continue;
+						 }
+						 else
+							 throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "括号前负号识别错误");   		
+						 
+					 }
 					 Values va=(Values)uop.getChild();
-					 if(va.getType()==ValuesType.DOUBLE)
-						 va.setDouble(-(va.getDouble()));
-					 factor.push(va);
-					 if(va.getType()==ValuesType.INTEGER)
-						 va.setIntValue(-(va.getIntVal()));
+					 factor.push(unaryConvert(va,uop.getOp()));
+					 
 					 continue;
 				 }
 				 if(factor.size()<2)
@@ -444,6 +465,27 @@ public class Parser {
 			if(type==OperatorsType.MOD)
 				temp1.setIntValue(a%b);
 		 return temp1;
+	 }
+	 private Values unaryConvert(Values value, OperatorsType type) throws SyntaxException {
+		 if(type == OperatorsType.NEGATIVESIGN) {
+		 if(value.getType()==ValuesType.DOUBLE)
+			 value.setDouble(-(value.getDouble()));
+		
+		 if(value.getType()==ValuesType.INTEGER)
+			 value.setIntValue(-(value.getIntVal()));
+		 return value;
+		 }
+		 else if(type == OperatorsType.POSITIVEASIGN) {
+			 if(value.getType()==ValuesType.DOUBLE)
+				 value.setDouble((value.getDouble()));
+			
+			 if(value.getType()==ValuesType.INTEGER)
+				 value.setIntValue((value.getIntVal()));
+			return value;
+		 }
+		 else 
+			 throw new SyntaxException( "Error UnaryOperation While Calculating ");
+		 
 	 }
 	 private Stack<ExpressionToken> reverseStack(Stack<ExpressionToken> stack) {
 		Stack<ExpressionToken> temp= new Stack<ExpressionToken>();

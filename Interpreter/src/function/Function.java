@@ -1,10 +1,13 @@
-package state;
+package function;
 
 import type.StateType;
 import type.ValuesType;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import statement.State;
+import statement.Statement;
 
 public class Function extends State implements Iterable<Statement> {
 

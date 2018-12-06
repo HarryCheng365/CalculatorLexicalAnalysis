@@ -17,6 +17,7 @@ public class Operators extends ExpressionToken{
 	
 	 static{
 	        priorityMap.put(OperatorsType.NEGATIVESIGN,2);
+	        priorityMap.put(OperatorsType.POSITIVEASIGN,2);
 	        priorityMap.put(OperatorsType.NOT,2);
 	        priorityMap.put(OperatorsType.DUAL_ADD,2);
 	        priorityMap.put(OperatorsType.DUAL_SUBTRACT,2);

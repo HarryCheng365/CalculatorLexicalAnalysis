@@ -20,5 +20,6 @@ public enum OperatorsType {
     
    //unary operator 
     NOT,
-    NEGATIVESIGN
+    NEGATIVESIGN,
+    POSITIVEASIGN
 }
