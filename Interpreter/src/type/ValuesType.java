@@ -5,6 +5,7 @@ public enum ValuesType {
     DOUBLE,
     BOOLEAN,
 	CHAR,
-	STRING
+	STRING,
+	VOID
 }
 

@@ -13,6 +13,10 @@ public class Initialization extends Statement {
     private String id;
     private ExpressionToken eToken;
     private LinkedList<ExpressionToken> elements;
+    public Initialization() {
+    	statementType = StatementType.INITIALIZATION;
+    	elements = new LinkedList<>();
+    }
     
     public Initialization(String id, ExpressionToken value){
         statementType = StatementType.INITIALIZATION;

@@ -37,6 +37,8 @@ public class KeyWords extends Token {
 			return String.format("<Keyword %s,line: %d,position: %d>","false",this.getline(),this.getPos());
 		if(key == KeywordType.PRINT)
 			return String.format("<Keyword %s,line: %d,position: %d>","print",this.getline(),this.getPos());
+		if(key ==KeywordType.VOID)
+			return String.format("<Keyword %s,line: %d,position: %d>","void",this.getline(),this.getPos());
 		
 		return "<UnKnownKeyword>";
 	}

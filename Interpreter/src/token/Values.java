@@ -94,6 +94,8 @@ public class Values extends ExpressionToken {
 			return String.format("<CharValue %c,line: %d,position: %d>",charVal,this.getline(),this.getPos());
 		if(valueType == ValuesType.STRING)
 			return String.format("<StringValue %s,line: %d,position: %d>",strVal,this.getline(),this.getPos());
+		if(valueType == ValuesType.VOID)
+			return String.format("<Void %s,line: %d,position: %d>","void",this.getline(),this.getPos());
 		return "<UnKnownValue>";
 		
 	}

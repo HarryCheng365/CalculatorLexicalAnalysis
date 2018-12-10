@@ -28,6 +28,9 @@ public class Assign extends ExpressionToken {
 		assign = temp;
 		
 	}
+	public AssignType getAssignType() {
+		return this.assign;
+	}
 	public String print() {
 		if(assign == AssignType.ASSIGN)
 			return String.format("%c",'=');

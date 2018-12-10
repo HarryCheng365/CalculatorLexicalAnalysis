@@ -4,7 +4,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Stack;
 
+import com.sun.org.apache.xpath.internal.compiler.Keywords;
+
+import statement.IfElse;
+import statement.Statement;
+import exception.CMMException;
 import exception.SyntaxException;
+import statement.Initialization;
+import token.Assign;
 import token.BinaryOperator;
 import token.ExpressionToken;
 import token.Identifiers;
@@ -14,6 +21,8 @@ import token.Separators;
 import token.Token;
 import token.UnaryOperator;
 import token.Values;
+import token.Casting;
+import type.AssignType;
 import type.KeywordType;
 import type.OperatorsType;
 import type.SeparatorsType;
@@ -38,10 +47,7 @@ public class Parser {
 		tokens = new LinkedList<Token>();
 		calHash = new HashMap<Integer,Stack<ExpressionToken>>();
 		hashKey = 0;
-		sepStack = new Stack<SeparatorsType>();
-		
-		
-		
+		sepStack = new Stack<SeparatorsType>();	
 	}
 	
 	 //check whether current token is operator
@@ -64,6 +70,25 @@ public class Parser {
 	        analysis.next();
 	        return true;
 	    }
+	 private boolean isAssign() {
+		 if(analysis.getToken()==null)
+			 return false;
+		 return analysis.getToken().getToken()==TokenType.ASSIGN;
+		 
+	 }
+	 private boolean isAssign(AssignType type) {
+		 if(!isAssign())
+			 return false;
+		 Assign temp =(Assign)analysis.getToken();
+		 return temp.getAssignType()==type;
+		 
+	 }
+	 private boolean detectAssign(AssignType type) {
+		 if(!isAssign(type))
+			 return false;
+		 analysis.next();
+		 return true; 
+	 }
 	 // check whether current token is separator
 	 private boolean isSeparator() {
 	        if (analysis.getToken() == null)
@@ -122,6 +147,18 @@ public class Parser {
 		 Values temp = (Values)analysis.getToken();
 		 return temp.getType();
 	 }
+	 private ValuesType detectDataType() {
+	        if (analysis.getToken() == null)
+	            return null;
+	        if (analysis.getToken().getToken() != TokenType.KEYWORDS)
+	            return null;
+	        KeyWords keyword = (KeyWords)analysis.getToken();
+	        ValuesType result = Casting.KeywordTypeToValueType(keyword.getKeyVal());
+	        if (result == null)
+	            return null;
+	        return result;
+	    }
+
 	 private boolean isUnaryOperator(Operators temp) {
 		 if(temp.getOp()==OperatorsType.NOT||temp.getOp()==OperatorsType.NEGATIVESIGN||temp.getOp()==OperatorsType.POSITIVEASIGN)
 			 return true;
@@ -281,9 +318,6 @@ public class Parser {
 	        while (!operatorStack.isEmpty()) {
 	            operandStack.push(operatorStack.pop());
 	        }
-	       for(int i =0; i<operandStack.size();i++) {
-	    	   System.out.println("这是"+operandStack.get(i).display());
-	       }
 	        return operandStack;
 	 }
 	 //在词法部分 就解决操作符多个问题 报不合法
@@ -370,8 +404,6 @@ public class Parser {
 						 throw new SyntaxException( "Error Operation While Calculating ");		 
 					 break;
 				 case MULTIPLY:
-					 System.out.println(c);
-					 System.out.println(d);
 					 if(!opCalculate1(OperatorsType.MULTIPLY,temp1,a,b,c,d,e,f,factor))
 						 throw new SyntaxException( "Error Operation While Calculating ");
 					 break;
@@ -509,6 +541,12 @@ public class Parser {
 		stack =temp;
 		return stack;
 	 }
+	 private Values detectExpression(Values val) throws SyntaxException {
+		 val.setInteger(new Integer(++hashKey));
+         calHash.put(val.getInteger(), detectExpression());
+         val.setToken(TokenType.EXPRESSION);
+         return val;
+	 }
 	 public String printStack() throws SyntaxException {
 		 while(!analysis.getList().isEmpty()) {
 			 if(detectSeparator(SeparatorsType.SEMICOLON))
@@ -516,9 +554,9 @@ public class Parser {
 			 if(analysis.getList().size()<=1)
 				 break;
 			 Values val = new Values(ValuesType.DOUBLE);
-             val.setInteger(new Integer(++hashKey));
-             calHash.put(val.getInteger(), detectExpression());
-             val.setToken(TokenType.EXPRESSION);
+			 val.setInteger(new Integer(++hashKey));
+	         calHash.put(val.getInteger(), detectExpression());
+	         val.setToken(TokenType.EXPRESSION);
 		 if(calHash.isEmpty())
 			 System.out.println("表达式为空");
 		 
@@ -532,4 +570,162 @@ public class Parser {
 		 
 		 
 	 }
+	 private Initialization detectInitialization() throws CMMException {
+		 Initialization initialization = new Initialization();
+		 ValuesType dataType = detectDataType();
+	     if (dataType == null)
+	        return null;
+	     analysis.next();
+	     String id = detectIdentifier();
+	     if (id == null)
+	           throw new CMMException("missing identifier");
+	     initialization.setId(id);
+	     analysis.next();
+	     if (detectSeparator(SeparatorsType.SEMICOLON))
+	           initialization.setExpressionToken((new Values(dataType)));
+	     else if (detectAssign(AssignType.ASSIGN)) {
+	    	    Values val = new Values(ValuesType.DOUBLE);
+	            initialization.setExpressionToken(detectExpression(val));
+	     }
+//	        else if (detectSeparator(SeparatorsType.LEFTBRACKET)){
+//	            // array initialization statement
+//	            initialization.setArray(true);
+//	            ExpressionToken arrayLength = detectExpression();
+//	            if(arrayLength == null){
+//	                // deduce array length from initialization list
+//	                if(!detectSeparator(SeparatorType.RIGHTBRACKET))
+//	                    throwException("missing right bracket");
+//	                if (!detectOperator(OperatorType.ASSIGN))
+//	                    throwException("missing assign operator");
+//	                if (!detectSeparator(SeparatorType.LEFTBRACE))
+//	                    throwException("missing left brace");
+//	                ExpressionToken element = detectExpression();
+//	                if(element == null)
+//	                    throwException("can not declare an array of length 0");
+//	                initialization.addElement(element);
+//	                int cnt = 1;
+//	                while(detectSeparator(SeparatorType.COMMA)){
+//	                    element = detectExpression();
+//	                    if(element == null)
+//	                        throwException("missing array element");
+//	                    initialization.addElement(element);
+//	                    cnt++;
+//	                }
+//	                if (!detectSeparator(SeparatorType.RIGHTBRACE))
+//	                    throwException("missing right brace");
+//	                Value len = new Value(ValueType.INTEGER);
+//	                len.setIntValue(cnt);
+//	                initialization.setArrayLength(len);
+//	            }else{
+//	                // array length is given
+//	                initialization.setArrayLength(arrayLength);
+//	                if(!detectSeparator(SeparatorType.RIGHTBRACKET))
+//	                    throwException("missing right bracket");
+//	                if(detectSeparator(SeparatorType.SEMICOLON))
+//	                    return initialization;
+//	                if (!detectOperator(OperatorType.ASSIGN))
+//	                    throwException("missing assign operator");
+//	                if (!detectSeparator(SeparatorType.LEFTBRACE))
+//	                    throwException("missing left brace");
+//	                ExpressionToken element = detectExpression();
+//	                if(element == null)
+//	                    throwException("can not declare an array of length 0");
+//	                initialization.addElement(element);
+//	                while(detectSeparator(SeparatorType.COMMA)){
+//	                    element = detectExpression();
+//	                    if(element == null)
+//	                        throwException("missing array element");
+//	                    initialization.addElement(element);
+//	                }
+//	                if (!detectSeparator(SeparatorType.RIGHTBRACE))
+//	                    throwException("missing right brace");
+//	            }
+//	        }else
+//	            throwException("missing semicolon");
+	        return initialization;
+		 
+	 }
+	 private IfElse detectIfElse() throws CMMException{
+	        IfElse ifElse = new IfElse();
+	        if(!detectKeyword(KeywordType.IF))
+	            return null;
+	        if(!detectSeparator(SeparatorsType.LEFTPARENTHESES)) 
+	            throw new CMMException("missing left parentheses");
+	        analysis.next();
+	        Values val= new Values(ValuesType.DOUBLE);
+	        ExpressionToken condition = detectExpression(val);
+	        if(condition == null)
+	        	throw new CMMException("missing left parentheses");
+	        if(!detectSeparator(SeparatorsType.RIGHTPARENTHESES))
+	        	throw new CMMException("missing left parentheses");
+            
+//	        LinkedList<Statement> ifbranch = detectCodeBlock();
+//	        ifElse.setCondition(condition);
+//	        ifElse.setIfBranch(ifbranch);
+
+	        // exist else branch
+	        if(detectKeyword(KeywordType.ELSE)){
+	            LinkedList<Statement> elsebranch = detectCodeBlock();
+	            ifElse.setElseBranch(elsebranch);
+	        }
+
+	        return ifElse;
+	    }
+	 
+	 private Statement detectStatement() throws CMMException{
+	        // ignore all empty statements
+	        while(detectSeparator(SeparatorsType.SEMICOLON))
+	            ;
+
+	        Initialization initialization = detectInitialization();
+	        if(initialization != null)
+	            return initialization;
+
+	        IfElse ifElse = detectIfElse();
+	        if(ifElse != null)
+	            return ifElse;
+
+//	        While wStatement = detectWhile();
+//	        if(wStatement != null)
+//	            return wStatement;
+//
+//	        For fStatement = detectFor();
+//	        if(fStatement != null)
+//	            return fStatement;
+//
+//	        Return rStatement = detectReturn();
+//	        if (rStatement != null)
+//	            return rStatement;
+//
+//	        Expression expression = new Expression();
+//	        ExpressionToken root = detectExpression();
+//	        if(root != null){
+//	            expression.setRoot(root);
+//	            return expression;
+//	        }
+	        return null;
+	    }
+	 private LinkedList<Statement> detectStatements() throws CMMException{
+	        // check statements
+	        LinkedList<Statement> statements = new LinkedList<>();
+	        Statement statement;
+	        while((statement = detectStatement()) != null){
+	            statements.add(statement);
+	        }
+	        return statements;
+	    }
+	 private LinkedList<Statement> detectCodeBlock() throws CMMException{
+	        // check left-brace
+	        if (!detectSeparator(SeparatorsType.LEFTBRACE))
+	        	throw new CMMException("missing left brace");
+
+	        LinkedList<Statement> statements = detectStatements();
+
+	        if (!detectSeparator(SeparatorsType.RIGHTBRACE))
+	        	throw new CMMException("missing right brace");
+	      
+
+	        return statements;
+	    }
+
 }

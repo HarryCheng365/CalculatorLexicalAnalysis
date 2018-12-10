@@ -12,5 +12,6 @@ public enum KeywordType {
 	DOUBLE,
 	CHAR,
 	STRING,
-	PRINT
+	PRINT,
+	VOID
 }
