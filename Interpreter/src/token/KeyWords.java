@@ -39,6 +39,10 @@ public class KeyWords extends Token {
 			return String.format("<Keyword %s,line: %d,position: %d>","print",this.getline(),this.getPos());
 		if(key ==KeywordType.VOID)
 			return String.format("<Keyword %s,line: %d,position: %d>","void",this.getline(),this.getPos());
+		if(key ==KeywordType.RETURN)
+			return String.format("<Keyword %s,line: %d,position: %d>","return",this.getline(),this.getPos());
+		if(key ==KeywordType.NULL)
+			return String.format("<Keyword %s,line: %d,position: %d>","null",this.getline(),this.getPos());
 		
 		return "<UnKnownKeyword>";
 	}

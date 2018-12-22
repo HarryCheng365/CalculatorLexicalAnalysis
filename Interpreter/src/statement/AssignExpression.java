@@ -1,38 +1,29 @@
 package statement;
 
-import type.StatementType;
-import type.ValuesType;
-
 import java.util.LinkedList;
 
+import token.Assign;
 import token.ExpressionToken;
-import token.Values;
+import type.StatementType;
 
-public class Initialization extends Statement {
-
-	private ValuesType val;
-    private String id;
+public class AssignExpression extends Statement {
+	private String id;
     private ExpressionToken eToken;
+    private Assign assign;
     private LinkedList<ExpressionToken> elements;
-    public Initialization() {
-    	statementType = StatementType.INITIALIZATION;
-    	elements = new LinkedList<>();
-    }
     
-    public Initialization(String id, ExpressionToken value){
+    public AssignExpression() {
+    	statementType = StatementType.ASSIGN;
+    }
+    public AssignExpression(String id,Assign assign, ExpressionToken value){
         statementType = StatementType.INITIALIZATION;
         this.id = id;
+        this.assign=assign;
         this.eToken = value;
+        
         elements = new LinkedList<>();
     }
     
-    public ValuesType getValuesType() {
-    	return this.val;
-    }
-    public void setValuesType(ValuesType val) {
-    	this.val=val;
-    }
-
     public String getId() {
         return id;
     }
@@ -47,14 +38,19 @@ public class Initialization extends Statement {
     	this.eToken=value;
     	
     }
+    public Assign getAssign() {
+    	return this.assign;
+    }
+    public void setAssign(Assign assign) {
+    	this.assign=assign;
+    }
     public void addElement(ExpressionToken expressionToken){
         elements.add(expressionToken);
     }
-
 	@Override
 	public String display() {
-		return "<Initialization Statement>\n"+this.val+"\n"+this.id+"\n"+this.eToken.display()+"\n<Initialization Statement>\n";
-		
+		return "<Assign Statement>\n"+this.id+this.assign.display()+this.eToken.display()+"\n<Assign Statement>\n";
 	}
+   
 
 }

@@ -592,6 +592,12 @@ public class Analysis {
 			keyword = new KeyWords(KeywordType.FALSE);
 		else if (isKeyword("print"))
 			keyword = new KeyWords(KeywordType.PRINT);
+		else if(isKeyword("void"))
+			keyword = new KeyWords(KeywordType.VOID);
+		else if(isKeyword("return"))
+			keyword = new KeyWords(KeywordType.RETURN);
+		else if(isKeyword("null"))
+			keyword = new KeyWords(KeywordType.NULL);
 		else
 			return null;
 		input.previous();

@@ -27,6 +27,11 @@ public class For extends Loop {
 	 public void setIncr(ExpressionToken incr) {
 	        this.incr = incr;
 	    }
+
+	@Override
+	public String display() {
+		return "<For Statement>"+"\n"+"Initialization:\n"+this.init.display();
+	}
 	}
 
 

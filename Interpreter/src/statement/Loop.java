@@ -24,4 +24,5 @@ public abstract class Loop extends Statement {
     public void setLoopStatements(LinkedList<Statement> loopStatements) {
         this.loopStatements = loopStatements;
     }
+    
 }

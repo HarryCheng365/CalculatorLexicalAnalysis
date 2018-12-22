@@ -17,4 +17,9 @@ public class Expression extends Statement {
     public void setExpressionToken(ExpressionToken root) {
         this.root = root;
     }
+
+	@Override
+	public String display() {
+		return "<Expression Statement>\n"+this.root.display()+"\n<Expression Statement>\n";
+	}
 }

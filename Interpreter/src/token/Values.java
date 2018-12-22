@@ -1,7 +1,9 @@
 package token;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import type.TokenType;
 import type.ValuesType;
@@ -14,6 +16,7 @@ public class Values extends ExpressionToken {
 	private String strVal;
 	private char charVal;
 	private Integer key;
+	private HashMap<Integer,Stack<ExpressionToken>> calHash;
 	
 	
 	public Values(ValuesType temp) {
@@ -26,6 +29,13 @@ public class Values extends ExpressionToken {
 	public Integer getInteger() {
 		return this.key;
 	}
+	public HashMap<Integer,Stack<ExpressionToken>> getHashMap(){
+		return this.calHash;
+	}
+	public void setHashMap(HashMap<Integer,Stack<ExpressionToken>> calHash) {
+		this.calHash=calHash;
+	}
+	
 	
 	public void setInteger(Integer key) {
 		this.key=key;
@@ -83,7 +93,51 @@ public class Values extends ExpressionToken {
 	public ValuesType getType() {
 		return this.valueType;
 	}
-	public String display() {
+	
+	public String display(HashMap<Integer,Stack<ExpressionToken>> hash) {
+		if(this.getToken()==TokenType.EXPRESSION) {
+			
+			Stack<ExpressionToken> temp=hash.get(this.key);
+			String str="";
+			while(!temp.isEmpty()) {
+				ExpressionToken tempToken = temp.pop();
+				if(tempToken.getToken()==TokenType.EXPRESSION) {
+					Values val =(Values)tempToken;
+					str+="<Separator>\n";
+					str+=val.display(hash);
+					str+="<Separator>\n";
+				}
+				else{
+						str+=tempToken.display();
+					    str+="\n";
+					}
+			}
+			return str;		    		
+		}
+		return "";
+		
+	}
+	public String display() {	
+if(this.getToken()==TokenType.EXPRESSION) {
+			
+			Stack<ExpressionToken> temp=this.getHashMap().get(this.key);
+			String str="";
+			while(!temp.isEmpty()) {
+				ExpressionToken tempToken = temp.pop();
+				if(tempToken.getToken()==TokenType.EXPRESSION) {
+					Values val =(Values)tempToken;
+					str+="<Separator>\n";
+					str+=val.display(this.getHashMap());
+					str+="<Separator>\n";
+				}
+				else{
+						str+=tempToken.display();
+					    str+="\n";
+					}
+			}
+			return str;		    		
+		}
+
 		if(valueType == ValuesType.INTEGER)
 			return String.format("<IntValue %d,line: %d,position: %d>",intVal,this.getline(),this.getPos());
 		if(valueType == ValuesType.BOOLEAN)

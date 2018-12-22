@@ -2,7 +2,9 @@ package main;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import exception.CMMException;
 import exception.SyntaxException;
+import statement.Statement;
 
 public class Main {
 	public static String filepath="/Users/Haoyu/Documents/CalculatorLexicalAnalysis/Interpreter/src/main/source.txt";
@@ -33,6 +35,18 @@ public class Main {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	public static void main(String[] args) throws CMMException {
+		Input input = new Input("/Users/Haoyu/Documents/CalculatorLexicalAnalysis/Interpreter/src/main/source.txt");
+	    Analysis analysis = new Analysis(input);
+	    analysis.Lexical();
+	    analysis.print();
+	    Parser parser = new Parser(analysis);
+	    
+	    System.out.println(Statement.listDisplay(parser.detectStatements()));
+	    
+		
 	}
 	
 }

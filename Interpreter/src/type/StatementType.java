@@ -7,6 +7,7 @@ public enum StatementType {
 	    WHILE,
 	    FOR,
 	    EXPRESSION,
-	    RETURN
+	    RETURN,
+	    ASSIGN
 }
 

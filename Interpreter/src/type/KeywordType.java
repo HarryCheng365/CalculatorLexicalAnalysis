@@ -13,5 +13,7 @@ public enum KeywordType {
 	CHAR,
 	STRING,
 	PRINT,
-	VOID
+	VOID,
+	RETURN,
+	NULL
 }

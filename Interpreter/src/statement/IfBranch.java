@@ -9,6 +9,8 @@ public class IfBranch {
 	ExpressionToken condition;
 	public IfBranch() {
 		ifBranch = new LinkedList<Statement>();
+		condition = null;
+		
 	}
 	public IfBranch(ExpressionToken con, LinkedList<Statement> ifBran){
 		this.ifBranch=ifBran;
@@ -33,5 +35,4 @@ public class IfBranch {
 	public void setIfBranch(LinkedList<Statement> ifBranch) {
 	    this.ifBranch = ifBranch;
 	}
-
 }
