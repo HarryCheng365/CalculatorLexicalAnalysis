@@ -39,14 +39,14 @@ public String ifBranchDisplay(LinkedList<IfBranch> temp) {
 	LinkedList<IfBranch> temp2 =temp;
 	String str ="";
 	IfBranch ifb=temp2.poll();
-	str+="if ("+ifb.getCondition().display()+")\n"+Statement.listDisplay(ifb.getIfBranch());
+	str+="if \n"+ifb.getCondition().display()+"\n"+Statement.listDisplay(ifb.getIfBranch());
 	while(!temp2.isEmpty()) {
 		ifb = temp2.poll();
 		if(ifb.condition==null) {
 			str+="else\n "+Statement.listDisplay(ifb.getIfBranch());
 			break;
 		}	
-		str+="else if("+ifb.getCondition().display()+")\n"+Statement.listDisplay(ifb.getIfBranch());
+		str+="else if\n"+ifb.getCondition().display()+"\n"+Statement.listDisplay(ifb.getIfBranch());
 	}
 	return str;
 	

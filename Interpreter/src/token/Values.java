@@ -103,13 +103,13 @@ public class Values extends ExpressionToken {
 				ExpressionToken tempToken = temp.pop();
 				if(tempToken.getToken()==TokenType.EXPRESSION) {
 					Values val =(Values)tempToken;
-					str+="<Separator>\n";
+					str+="<Separator ( >\n";
 					str+=val.display(hash);
-					str+="<Separator>\n";
+					str+="<Separator ) >\n";
 				}
 				else{
 						str+=tempToken.display();
-					    str+="\n";
+							str+="\n";
 					}
 			}
 			return str;		    		
@@ -126,9 +126,9 @@ if(this.getToken()==TokenType.EXPRESSION) {
 				ExpressionToken tempToken = temp.pop();
 				if(tempToken.getToken()==TokenType.EXPRESSION) {
 					Values val =(Values)tempToken;
-					str+="<Separator>\n";
+					str+="<Separator ( >\n";
 					str+=val.display(this.getHashMap());
-					str+="<Separator>\n";
+					str+="<Separator ) >\n";
 				}
 				else{
 						str+=tempToken.display();

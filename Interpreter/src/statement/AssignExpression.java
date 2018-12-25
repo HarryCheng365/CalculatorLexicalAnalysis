@@ -49,7 +49,7 @@ public class AssignExpression extends Statement {
     }
 	@Override
 	public String display() {
-		return "<Assign Statement>\n"+this.id+this.assign.display()+this.eToken.display()+"\n<Assign Statement>\n";
+		return "<Assign Statement>\n"+this.id+" "+this.assign.display()+" "+this.eToken.display()+"<Assign Statement>\n";
 	}
    
 

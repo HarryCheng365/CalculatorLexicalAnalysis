@@ -9,7 +9,7 @@ public class While extends Loop {
     }
     
     public String display() {
-    	return "<While Statement>"+"\n"+"Condition:\n "+this.condition.display()+"\n"+"LoopStatments:\n"+this.listDisplay(this.loopStatements)+"<While Statement>";
+    	return "<While Statement>"+"\n"+"Condition:\n"+this.condition.display()+"\n"+"LoopStatments:\n"+this.listDisplay(this.loopStatements)+"<While Statement>";
     
     }
 }

@@ -43,7 +43,6 @@ public class Main {
 	    analysis.Lexical();
 	    analysis.print();
 	    Parser parser = new Parser(analysis);
-	    
 	    System.out.println(Statement.listDisplay(parser.detectStatements()));
 	    
 		

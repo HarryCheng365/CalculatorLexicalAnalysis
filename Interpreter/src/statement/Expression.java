@@ -20,6 +20,6 @@ public class Expression extends Statement {
 
 	@Override
 	public String display() {
-		return "<Expression Statement>\n"+this.root.display()+"\n<Expression Statement>\n";
+		return "<Expression Statement>\n"+this.root.display()+"<Expression Statement>\n";
 	}
 }

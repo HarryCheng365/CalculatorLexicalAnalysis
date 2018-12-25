@@ -53,7 +53,7 @@ public class Initialization extends Statement {
 
 	@Override
 	public String display() {
-		return "<Initialization Statement>\n"+this.val+"\n"+this.id+"\n"+this.eToken.display()+"\n<Initialization Statement>\n";
+		return "<Initialization Statement>\n"+this.val+" "+this.id+" = "+this.eToken.display()+"<Initialization Statement>";
 		
 	}
 

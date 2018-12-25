@@ -89,9 +89,9 @@ public class Parser {
 	 private boolean detectAssign(AssignType type) {
 		 if(!isAssign(type))
 			 return false;
-		 analysis.next();
 		 return true; 
 	 }
+	 
 	 // check whether current token is separator
 	 private boolean isSeparator() {
 	        if (analysis.getToken() == null)
@@ -216,7 +216,7 @@ public class Parser {
 	 private boolean isExpressionToken() {
 	        if (analysis.getToken() == null)
 	            return false;
-	        if (analysis.getToken() instanceof ExpressionToken)
+	        if (analysis.getToken() instanceof ExpressionToken&&!(analysis.getToken() instanceof Assign))
 	            return true;
 	        if (analysis.getToken() instanceof Separators){
 	            Separators temp= (Separators)analysis.getToken();
@@ -578,14 +578,25 @@ public class Parser {
 	 private AssignExpression detectAssignExpression() throws CMMException {
 		 AssignExpression assign = new AssignExpression();
 		 String id =detectIdentifier();
+		 
 		 if (id == null)
-	           throw new CMMException("missing identifier");
+	           return null;
 	     assign.setId(id);
 	     analysis.next();
+	     System.out.println(analysis.getToken().display());
+	     if(detectAssign(AssignType.ADDASSIGN)||detectAssign(AssignType.MULASSIGN)||detectAssign(AssignType.SUBASSIGN)||detectAssign(AssignType.ASSIGN))
+	    	 assign.setAssign((Assign)analysis.getToken());
+	     else
+	    	 return null;
+	    
 	     if (detectSeparator(SeparatorsType.SEMICOLON))
-	           throw new CMMException("Assign Operation with no Expression !");
-	     else if (isAssign()) {
+	           throw new CMMException("Assign Operation with no Operator !");
+	     
+	     if (isAssign()) {
+	    	 
 	    	    assign.setAssign((Assign)analysis.getToken());
+	    	    analysis.next();
+	    	    
 	    	    Values val = new Values(ValuesType.DOUBLE);
 	            assign.setExpressionToken(detectExpression(val));
 	     }
@@ -607,8 +618,10 @@ public class Parser {
 	     if (detectSeparator(SeparatorsType.SEMICOLON))
 	           initialization.setExpressionToken((new Values(dataType)));
 	     else if (detectAssign(AssignType.ASSIGN)) {
+	    	 	analysis.next();
 	    	    Values val = new Values(ValuesType.DOUBLE);
 	            initialization.setExpressionToken(detectExpression(val));
+	           
 	     }
 //	        else if (detectSeparator(SeparatorsType.LEFTBRACKET)){
 //	            // array initialization statement
@@ -707,14 +720,12 @@ public class Parser {
 	            return null;
 	        if(!detectSeparator(SeparatorsType.LEFTPARENTHESES))
 	            throw new CMMException("missing left parentheses");
-	        analysis.next();
 	        Values val= new Values(ValuesType.DOUBLE);
 	        ExpressionToken condition = detectExpression(val);
 	        if(condition == null)
 	            throw new CMMException("missing condition");
-	        if(!detectSeparator(SeparatorsType.RIGHTPARENTHESES))
-	            throw new CMMException("missing right parentheses");
-	        analysis.next();
+//	        if(!detectSeparator(SeparatorsType.RIGHTPARENTHESES))
+//	            throw new CMMException("missing right parentheses");
 
 	        LinkedList<Statement> loopStatement = detectCodeBlock();
 	        wStat.setCondition(condition);
@@ -728,27 +739,40 @@ public class Parser {
 	            return null;
 	        if(!detectSeparator(SeparatorsType.LEFTPARENTHESES))
 	            throw new CMMException("missing left parentheses");
+	        sepStack.push(SeparatorsType.LEFTPARENTHESES);
 	        analysis.next();
-	        Values val= new Values(ValuesType.DOUBLE);
-	        ExpressionToken init = detectExpression(val);
+	        Initialization temp = detectInitialization();
+	        AssignExpression temp1=null;
+	        if(temp==null) {
+	        	temp1=detectAssignExpression();
+	        	if(temp1==null)
+		        	throw new CMMException("for: the first expression is missing ");
+	        	else
+	        		fStatement.setInit(temp1);
+	        }
+	        else
+	        	fStatement.setInitialization(temp);
+	        
 	        if(!detectSeparator(SeparatorsType.SEMICOLON))
 	            throw new CMMException("missing semicolon");
 	        analysis.next();
+	        
 	        Values valb= new Values(ValuesType.DOUBLE);
 	        ExpressionToken condition = detectExpression(valb);
 	        if(!detectSeparator(SeparatorsType.SEMICOLON))
 	            throw new CMMException("missing semicolon");
 	        analysis.next();
-	        Values valc= new Values(ValuesType.DOUBLE);
-	        ExpressionToken incr = detectExpression(valc);
+	        AssignExpression temp2 =detectAssignExpression();
+	        if(temp2==null)
+	        	throw new CMMException("for: the last Expression is missing ");
+	        fStatement.setIncr(temp2);
+	        
 	        if(!detectSeparator(SeparatorsType.RIGHTPARENTHESES))
 	            throw new CMMException("missing right parentheses");
 	        analysis.next();
 
 	        LinkedList<Statement> loopStatement = detectCodeBlock();
-	        fStatement.setInit(init);
 	        fStatement.setCondition(condition);
-	        fStatement.setIncr(incr);
 	        fStatement.setLoopStatements(loopStatement);
 
 	        return fStatement;
@@ -790,6 +814,10 @@ public class Parser {
 	        Return rStatement = detectReturn();
 	        if (rStatement != null)
 	            return rStatement;
+	        
+	        AssignExpression aStatement = detectAssignExpression();
+	        if(aStatement!=null)
+	        	return aStatement;
 
 	        Expression expression = new Expression();
 	        Values val = new Values(ValuesType.DOUBLE);
