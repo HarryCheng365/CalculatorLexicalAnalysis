@@ -260,7 +260,7 @@ public class Parser {
 	                    throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Unmatched left parentheses");
 	            }
 	            // Whenever meets ")" or "]" break recursion
-	            else if (isSeparator(SeparatorsType.RIGHTPARENTHESES) || isSeparator(SeparatorsType.RIGHTBRACKET)) {
+	            else if (isSeparator(SeparatorsType.RIGHTPARENTHESES)) {
 	            	if(sepStack.isEmpty()||(sepStack.pop()!=SeparatorsType.LEFTPARENTHESES))
 	            		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Unmatched Right parentheses");   		
 	            	break;
@@ -306,17 +306,35 @@ public class Parser {
 	                    continue;
 	            }
 	            else if(detectIdentifier()!=null) {
-	            	operandStack.add((ExpressionToken)analysis.getToken());
-	            	analysis.next();
-	            	continue;
+	            	throw new SyntaxException("Values can't be calculated!");
+//	            	operandStack.add((ExpressionToken)analysis.getToken());
+//	            	analysis.next();
+//	            	continue;
 	            }
-	            else if(detectValue()!=null&&(detectValue()==ValuesType.BOOLEAN||detectValue()==ValuesType.DOUBLE||detectValue()==ValuesType.INTEGER)) {
-	            	operandStack.add((ExpressionToken)analysis.getToken());
-	            	analysis.next();
-	            	continue;
+	            else if(detectValue()!=null) {
+	            	if(detectValue()==ValuesType.BOOLEAN||detectValue()==ValuesType.DOUBLE||detectValue()==ValuesType.INTEGER) {
+	            		if(detectValue()==ValuesType.BOOLEAN) {
+	            			Values temp = (Values)analysis.getToken();
+	            			temp.setType(ValuesType.INTEGER);
+	            			if(temp.getBool()==true)
+	            				temp.setIntValue(1);
+	            			else
+	            				temp.setIntValue(0);
+	            			operandStack.add(temp);
+	            			analysis.next();
+	            			continue;
+	            		}
+	            		else {
+	            		operandStack.add((ExpressionToken)analysis.getToken());
+		            	analysis.next();
+		            	continue;
+	            		}
+	            	}
+	            	else
+	            		throw new SyntaxException(analysis.getToken().getline(), analysis.getToken().getPos(), "Unmatched DataType");  
+	            	
 	            
-	            }
-	            
+	            }         
 	        }
 	        while (!operatorStack.isEmpty()) {
 	            operandStack.push(operatorStack.pop());
@@ -564,7 +582,8 @@ public class Parser {
 	         val.setToken(TokenType.EXPRESSION);
 		 if(calHash.isEmpty())
 			 System.out.println("表达式为空");
-		 
+		 if(!detectSeparator(SeparatorsType.SEMICOLON))
+			 throw new SyntaxException( "There exsit Tokens which can't be recognizing by int and double calculator");
 		Values temp =(Values) calculate(calHash.get(val.getInteger()));
 		System.out.println(-(-(-(-(-1*(3-7)*(-4)+2))+3)+4*12+3*(-(-(-(+3))))));
 		return temp.display();

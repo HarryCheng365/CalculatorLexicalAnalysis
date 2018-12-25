@@ -37,15 +37,15 @@ public class Main {
 		return true;
 	}
 	
-	public static void main(String[] args) throws CMMException {
-		Input input = new Input("/Users/Haoyu/Documents/CalculatorLexicalAnalysis/Interpreter/src/main/source.txt");
-	    Analysis analysis = new Analysis(input);
-	    analysis.Lexical();
-	    analysis.print();
-	    Parser parser = new Parser(analysis);
-	    System.out.println(Statement.listDisplay(parser.detectStatements()));
-	    
-		
-	}
+//	public static void main(String[] args) throws CMMException {
+//		Input input = new Input("/Users/Haoyu/Documents/CalculatorLexicalAnalysis/Interpreter/src/main/source.txt");
+//	    Analysis analysis = new Analysis(input);
+//	    analysis.Lexical();
+//	    analysis.print();
+//	    Parser parser = new Parser(analysis);
+//	    System.out.println(Statement.listDisplay(parser.detectStatements()));
+//	    
+//		
+//	}
 	
 }
